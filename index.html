@@ -3,354 +3,656 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>ExamPro — Online Examination Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>ExamPro — Online Test Series</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --p:#6C63FF;--ph:#5A52D5;--pl:#EEEDFF;--pp:#F8F7FF;
-  --teal:#26A69A;--teal-l:#E0F2F1;
-  --green:#43A047;--green-l:#E8F5E9;--green-d:#2E7D32;
-  --red:#E53935;--red-l:#FFEBEE;--red-d:#C62828;
-  --amber:#FFA726;--amber-l:#FFF8E1;--amber-d:#EF6C00;
-  --bg:#F5F5F5;--card:#FFFFFF;
-  --g0:#FFFFFF;--g50:#FAFAFA;--g100:#F5F5F5;--g150:#EEEEEE;--g200:#E0E0E0;
-  --g300:#BDBDBD;--g400:#9E9E9E;--g500:#757575;--g600:#616161;--g700:#424242;
-  --g800:#212121;--g900:#111111;
-  --border:#E8E8E8;
+  --p:#1A56DB;--ph:#1246C0;--pl:#EBF2FF;--pp:#F0F5FF;
+  --p2:#3B82F6;
+  --green:#059669;--green-l:#ECFDF5;--green-d:#047857;
+  --red:#DC2626;--red-l:#FEF2F2;--red-d:#B91C1C;
+  --amber:#D97706;--amber-l:#FFFBEB;
+  --bg:#F8FAFC;--card:#FFFFFF;
+  --g50:#F9FAFB;--g100:#F3F4F6;--g150:#EAECF0;--g200:#D1D5DB;
+  --g300:#9CA3AF;--g400:#6B7280;--g500:#4B5563;--g600:#374151;
+  --g700:#1F2937;--g800:#111827;
+  --border:#E5E7EB;--border-focus:#93C5FD;
   --sh1:0 1px 4px rgba(0,0,0,.06);
-  --sh2:0 2px 12px rgba(0,0,0,.08);
-  --sh3:0 4px 24px rgba(0,0,0,.1);
-  --ring:0 0 0 3px rgba(108,99,255,.15);
-  --r:8px;--rm:10px;--rl:14px;--rxl:18px;--rf:9999px;
-  --font:'Nunito',system-ui,sans-serif;
+  --sh2:0 4px 16px rgba(0,0,0,.08);
+  --sh3:0 8px 32px rgba(0,0,0,.12);
+  --ring:0 0 0 3px rgba(59,130,246,.2);
+  --r:8px;--rm:10px;--rl:12px;--rxl:16px;--rf:9999px;
+  --font:'Inter',system-ui,sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;font-size:17px;}
-body{font-family:var(--font);background:var(--bg);color:var(--g800);line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden;}
-::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--g100);}::-webkit-scrollbar-thumb{background:var(--g300);border-radius:6px;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:var(--font);background:var(--bg);color:var(--g700);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-track{background:var(--g100);}::-webkit-scrollbar-thumb{background:var(--g200);border-radius:6px;}
+::-webkit-scrollbar-thumb:hover{background:var(--g300);}
 
-#loader{position:fixed;inset:0;background:rgba(245,245,245,.85);display:none;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(6px);}
+/* Loader */
+#loader{position:fixed;inset:0;background:rgba(255,255,255,.85);display:none;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(4px);}
 #loader.active{display:flex;}
-.spin{width:36px;height:36px;border:3px solid var(--g200);border-top-color:var(--p);border-radius:50%;animation:sp .65s linear infinite;}
+.spin{width:36px;height:36px;border:3px solid var(--g150);border-top-color:var(--p);border-radius:50%;animation:sp .65s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
 
-#toastBox{position:fixed;top:16px;right:16px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:calc(100vw - 32px);}
-.toast{padding:14px 20px;border-radius:var(--rm);font-size:15px;font-weight:700;box-shadow:var(--sh3);animation:tIn .35s ease;display:flex;align-items:center;gap:8px;pointer-events:auto;border-left:4px solid transparent;}
-.toast.success{background:var(--green-l);color:var(--green-d);border-left-color:var(--green);}
-.toast.error{background:var(--red-l);color:var(--red-d);border-left-color:var(--red);}
-.toast.info{background:var(--pl);color:var(--ph);border-left-color:var(--p);}
-.toast.warning{background:var(--amber-l);color:var(--amber-d);border-left-color:var(--amber);}
-@keyframes tIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+/* Toast */
+#toastBox{position:fixed;top:20px;right:20px;z-index:100000;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:360px;}
+.toast{padding:12px 16px;border-radius:var(--rm);font-size:13.5px;font-weight:600;box-shadow:var(--sh3);animation:tIn .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;pointer-events:auto;border:1px solid transparent;}
+.toast.success{background:#fff;color:var(--green-d);border-color:#A7F3D0;box-shadow:0 4px 16px rgba(5,150,105,.12);}
+.toast.error{background:#fff;color:var(--red-d);border-color:#FECACA;box-shadow:0 4px 16px rgba(220,38,38,.12);}
+.toast.info{background:#fff;color:var(--ph);border-color:#BFDBFE;box-shadow:0 4px 16px rgba(26,86,219,.12);}
+.toast.warning{background:#fff;color:var(--amber);border-color:#FDE68A;box-shadow:0 4px 16px rgba(217,119,6,.12);}
+@keyframes tIn{from{transform:translateX(110%) scale(.9);opacity:0;}to{transform:translateX(0) scale(1);opacity:1;}}
+</style>
+</head>
+<body>
+<div id="loader"><div class="spin"></div></div>
+<div id="toastBox"></div>
 
-#tabWarning{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:99998;backdrop-filter:blur(8px);}
+<style>
+/* Tab Warning */
+#tabWarning{position:fixed;inset:0;background:rgba(17,24,39,.5);display:none;align-items:center;justify-content:center;z-index:99998;backdrop-filter:blur(8px);}
 #tabWarning.active{display:flex;}
-.tw-box{background:var(--card);border-radius:var(--rxl);padding:clamp(24px,4vw,40px);max-width:440px;width:90%;text-align:center;box-shadow:var(--sh3);animation:wP .3s ease;}
-@keyframes wP{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.tw-box{background:#fff;border-radius:var(--rxl);padding:clamp(24px,4vw,40px);max-width:440px;width:90%;text-align:center;box-shadow:var(--sh3);animation:wP .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes wP{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
 .tw-icon{font-size:48px;margin-bottom:12px;}
-.tw-title{font-size:clamp(18px,3vw,22px);font-weight:900;color:var(--red-d);margin-bottom:8px;}
-.tw-msg{font-size:15px;color:var(--g600);line-height:1.65;margin-bottom:16px;}
-.tw-count{display:inline-block;background:var(--red-l);color:var(--red-d);padding:6px 18px;border-radius:var(--rf);font-size:16px;font-weight:800;margin-bottom:16px;}
+.tw-title{font-size:clamp(17px,3vw,21px);font-weight:800;color:var(--red-d);margin-bottom:8px;}
+.tw-msg{font-size:14px;color:var(--g400);line-height:1.7;margin-bottom:14px;}
+.tw-count{display:inline-block;background:var(--red-l);color:var(--red-d);padding:5px 18px;border-radius:var(--rf);font-size:14px;font-weight:700;margin-bottom:16px;border:1px solid #FECACA;}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:none;border-radius:var(--r);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.btn:hover{transform:translateY(-1px);box-shadow:var(--sh1);}.btn:active{transform:translateY(0);}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 20px;border:1.5px solid transparent;border-radius:var(--rm);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--sh1);}
+.btn:active{transform:translateY(0);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 .btn-p{background:var(--p);color:#fff;}.btn-p:hover{background:var(--ph);}
-.btn-s{background:var(--green);color:#fff;}
+.btn-s{background:var(--green);color:#fff;}.btn-s:hover{background:var(--green-d);}
 .btn-d{background:var(--red);color:#fff;}.btn-d:hover{background:var(--red-d);}
-.btn-w{background:var(--amber);color:#fff;}
-.btn-o{background:var(--card);color:var(--g700);border:1.5px solid var(--border);}.btn-o:hover{border-color:var(--p);color:var(--p);}
-.btn-logout{background:var(--red-l);color:var(--red-d);border:1.5px solid rgba(229,57,53,.12);}.btn-logout:hover{background:var(--red);color:#fff;}
-.btn-sm{padding:7px 14px;font-size:13px;}.btn-lg{padding:12px 26px;font-size:16px;border-radius:var(--rm);}
-.btn-xl{padding:16px 36px;font-size:18px;font-weight:800;border-radius:var(--rm);}
+.btn-w{background:#F59E0B;color:#fff;}.btn-w:hover{background:#D97706;}
+.btn-o{background:#fff;color:var(--g600);border-color:var(--border);}.btn-o:hover{border-color:var(--p);color:var(--p);background:var(--pl);box-shadow:none;}
+.btn-logout{background:var(--red-l);color:var(--red-d);border-color:#FECACA;}.btn-logout:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.btn-sm{padding:6px 13px;font-size:12.5px;border-radius:var(--r);}
+.btn-lg{padding:11px 26px;font-size:15px;}
+.btn-xl{padding:13px 32px;font-size:15.5px;font-weight:700;}
 
-.fg{margin-bottom:18px;}.fl{display:block;font-size:14px;font-weight:700;color:var(--g600);margin-bottom:5px;}
-.fc{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-family:inherit;font-size:16px;color:var(--g800);background:var(--card);transition:all .2s;}
-.fc:focus{outline:none;border-color:var(--p);box-shadow:var(--ring);}.fc::placeholder{color:var(--g400);}
-textarea.fc{resize:vertical;min-height:88px;}
-select.fc{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%239E9E9E' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+/* Forms */
+.fg{margin-bottom:16px;}
+.fl{display:block;font-size:12.5px;font-weight:600;color:var(--g500);margin-bottom:5px;letter-spacing:.01em;}
+.fc{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rm);font-family:inherit;font-size:14.5px;color:var(--g700);background:#fff;transition:all .18s;}
+.fc:focus{outline:none;border-color:var(--p);box-shadow:var(--ring);}
+.fc:hover:not(:focus){border-color:var(--g300);}
+.fc::placeholder{color:var(--g300);}
+textarea.fc{resize:vertical;min-height:80px;}
+select.fc{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;}
 
-.page{display:none;min-height:100vh;min-height:100dvh;flex-direction:column;}.page.active{display:flex;}
-.wrap{max-width:1060px;margin:0 auto;padding:clamp(14px,2.5vw,28px);width:100%;flex:1;}
-.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:18px;}
+/* Layout */
+.page{display:none;min-height:100vh;flex-direction:column;}.page.active{display:flex;}
+.wrap{max-width:1100px;margin:0 auto;padding:clamp(16px,2.5vw,28px);width:100%;flex:1;}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:16px;}
 .fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+</style>
 
-.top{background:var(--card);color:var(--g800);padding:0 clamp(14px,2.5vw,28px);height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100;}
-.top-t{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;}
-.top-t .br{color:var(--p);font-weight:900;font-size:17px;flex-shrink:0;}
-.top-t .sep{color:var(--g300);margin:0 2px;flex-shrink:0;}
-.top-t>span:last-child{color:var(--g500);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+<style>
+/* Top Navbar */
+.top{background:#fff;border-bottom:1px solid var(--border);padding:0 clamp(16px,2.5vw,32px);height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--border);}
+.top-t{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--g500);min-width:0;overflow:hidden;}
+.top-t .br{color:var(--p);font-weight:800;font-size:17px;flex-shrink:0;letter-spacing:-.3px;}
+.top-t .sep{color:var(--g200);margin:0 2px;flex-shrink:0;}
+.top-t>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--g500);}
 .top-a{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.top-badge{background:var(--pl);color:var(--p);padding:4px 12px;border-radius:var(--rf);font-size:12px;font-weight:700;}
+.top-badge{background:var(--pl);color:var(--p);padding:3px 12px;border-radius:var(--rf);font-size:11.5px;font-weight:700;border:1px solid #BFDBFE;}
+.top .btn-o{border-color:var(--border);}
 
-.foot{background:var(--card);color:var(--g400);padding:14px;text-align:center;font-size:12px;margin-top:auto;border-top:1.5px solid var(--border);}.foot b{color:var(--g700);}
+/* Remove gov-stripe (not needed for Testbook style) */
+.gov-stripe{display:none;}
 
-.card{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh1);border:1.5px solid var(--border);overflow:hidden;}
-.card-h{padding:14px 20px;border-bottom:1.5px solid var(--g150);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--g50);}
-.card-h h3{font-size:15px;font-weight:800;color:var(--g700);}
+/* Footer */
+.foot{background:#fff;color:var(--g400);padding:16px;text-align:center;font-size:12.5px;margin-top:auto;border-top:1px solid var(--border);}
+.foot b{color:var(--g600);}
+
+/* Cards */
+.card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh1);border:1px solid var(--border);overflow:hidden;}
+.card-h{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.card-h h3{font-size:14px;font-weight:700;color:var(--g700);}
 .card-b{padding:20px;}
 
+/* Tables */
 .tw2{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;min-width:580px;}
-th{background:var(--g50);padding:10px 14px;text-align:left;font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--g200);}
-td{padding:12px 14px;border-bottom:1px solid var(--g150);font-size:14px;color:var(--g700);}
-tr:hover td{background:var(--g50);}tr:last-child td{border-bottom:none;}
+th{background:var(--g50);padding:10px 16px;text-align:left;font-size:11.5px;font-weight:600;color:var(--g400);border-bottom:1px solid var(--border);letter-spacing:.02em;}
+td{padding:12px 16px;border-bottom:1px solid var(--g100);font-size:13.5px;color:var(--g600);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--g50);}
 
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--rf);font-size:11px;font-weight:800;}
-.badge-open{background:var(--green-l);color:var(--green-d);}.badge-closed{background:var(--red-l);color:var(--red-d);}.badge-hidden{background:var(--amber-l);color:var(--amber-d);}
-.badge-correct{background:var(--green-l);color:var(--green-d);}.badge-wrong{background:var(--red-l);color:var(--red-d);}.badge-skip{background:var(--g150);color:var(--g500);}
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--rf);font-size:11.5px;font-weight:600;}
+.badge-open{background:#ECFDF5;color:#065F46;}
+.badge-closed{background:#FEF2F2;color:#991B1B;}
+.badge-hidden{background:#FFFBEB;color:#92400E;}
+.badge-correct{background:#ECFDF5;color:#065F46;}
+.badge-wrong{background:#FEF2F2;color:#991B1B;}
+.badge-skip{background:var(--g100);color:var(--g400);}
 
-.lnav{background:var(--card);padding:0 clamp(14px,3vw,36px);height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--border);}
-.llogo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:18px;color:var(--g800);}
-.llogo .lm{width:32px;height:32px;background:var(--p);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;}
-.lhero{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(28px,5vw,72px) clamp(14px,3vw,36px);background:var(--card);}
-.hc{text-align:center;max-width:560px;}
-.hpill{display:inline-flex;align-items:center;gap:6px;background:var(--pl);color:var(--p);padding:6px 16px;border-radius:var(--rf);font-size:13px;font-weight:700;margin-bottom:22px;}
-.hc h1{font-size:clamp(26px,5vw,44px);font-weight:900;color:var(--g800);line-height:1.15;letter-spacing:-.02em;margin-bottom:14px;}
-.hc h1 span{color:var(--p);}
-.hsub{font-size:clamp(15px,2vw,17px);color:var(--g500);line-height:1.7;margin-bottom:32px;}
-.hbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.hfeats{display:flex;gap:clamp(12px,2vw,28px);margin-top:clamp(28px,4vw,48px);flex-wrap:wrap;justify-content:center;}
-.hfeat{display:flex;align-items:center;gap:6px;color:var(--g500);font-size:13px;font-weight:600;}
-.hfeat .hfd{width:6px;height:6px;border-radius:50%;background:var(--p);}
+/* Admin tabs */
+.atabs{display:flex;margin-bottom:24px;border-bottom:1px solid var(--border);overflow-x:auto;gap:4px;}
+.atab{padding:10px 18px;border:none;background:transparent;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--g400);transition:all .18s;white-space:nowrap;border-radius:var(--r) var(--r) 0 0;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.atab.active{color:var(--p);border-bottom-color:var(--p);background:var(--pp);}
+.atab:hover:not(.active){color:var(--g600);background:var(--g50);}
+.tc{display:none;}.tc.active{display:block;animation:fi .18s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+</style>
 
-.atabs{display:flex;margin-bottom:20px;border-bottom:1.5px solid var(--border);overflow-x:auto;}
-.atab{padding:12px 22px;border:none;background:transparent;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;color:var(--g400);transition:all .2s;white-space:nowrap;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;}
-.atab.active{color:var(--p);border-bottom-color:var(--p);}.atab:hover:not(.active){color:var(--g700);}
-.tc{display:none;}.tc.active{display:block;animation:fi .2s ease;}
-@keyframes fi{from{opacity:0;}to{opacity:1;}}
-
-/* SEARCH */
+<style>
+/* Search */
 .search-wrap{margin-bottom:18px;}
 .search-box{position:relative;}
-.search-box input{width:100%;padding:13px 18px 13px 44px;border:1.5px solid var(--border);border-radius:var(--rm);font-family:inherit;font-size:16px;color:var(--g800);background:var(--card);transition:all .2s;}
+.search-box input{width:100%;padding:11px 16px 11px 44px;border:1.5px solid var(--border);border-radius:var(--rl);font-family:inherit;font-size:14.5px;color:var(--g700);background:#fff;transition:all .18s;}
 .search-box input:focus{outline:none;border-color:var(--p);box-shadow:var(--ring);}
-.search-box input::placeholder{color:var(--g400);}
-.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--g400);pointer-events:none;}
-.search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:var(--g200);border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:13px;color:var(--g500);display:none;align-items:center;justify-content:center;}
-.search-clear.show{display:flex;}
-.search-clear:hover{background:var(--red-l);color:var(--red);}
-.no-results{text-align:center;padding:40px 20px;color:var(--g400);font-size:15px;font-weight:600;}
-.exam-count{font-size:13px;color:var(--g400);font-weight:600;margin-top:3px;}
-.exam-count strong{color:var(--p);}
+.search-box input::placeholder{color:var(--g300);}
+.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--g300);pointer-events:none;}
+.search-clear{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:var(--g100);border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;color:var(--g400);display:none;align-items:center;justify-content:center;transition:all .15s;}
+.search-clear.show{display:flex;}.search-clear:hover{background:var(--red-l);color:var(--red);}
+.no-results{text-align:center;padding:48px 20px;color:var(--g400);font-size:14px;}
+.exam-count{font-size:13px;color:var(--g400);margin-top:3px;}
+.exam-count strong{color:var(--p);font-weight:700;}
 
-/* SINGLE COL EXAM CARDS */
-.exam-list{display:flex;flex-direction:column;gap:14px;}
-.ecard{background:var(--card);border-radius:var(--rl);border:1.5px solid var(--border);overflow:hidden;transition:all .25s;cursor:pointer;display:flex;flex-direction:row;}
-.ecard:hover{border-color:var(--p);box-shadow:var(--sh2);}
-.ecard-left{background:var(--p);padding:20px 24px;color:#fff;display:flex;flex-direction:column;justify-content:center;min-width:200px;max-width:260px;flex-shrink:0;}
-.ecard-left h3{font-size:17px;font-weight:800;margin-bottom:4px;line-height:1.3;}
-.ecard-left p{font-size:13px;color:rgba(255,255,255,.7);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.ecard-right{padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex:1;gap:16px;flex-wrap:wrap;}
-.ecard-meta{display:flex;gap:clamp(14px,2vw,28px);flex-wrap:wrap;}
-.ecard-meta .em .eml{font-size:10px;color:var(--g400);font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
-.ecard-meta .em .emv{font-size:17px;font-weight:900;color:var(--g800);}
-.ecard-action{flex-shrink:0;}
-.ecard-action .btn{min-width:130px;}
+/* Exam Cards */
+.exam-list{display:flex;flex-direction:column;gap:12px;}
+.ecard{background:#fff;border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;transition:all .2s;cursor:pointer;display:flex;}
+.ecard:hover{border-color:var(--p);box-shadow:0 4px 20px rgba(26,86,219,.1);transform:translateY(-1px);}
+.ecard-left{background:linear-gradient(135deg,#1A56DB 0%,#1E40AF 100%);padding:20px 24px;color:#fff;display:flex;flex-direction:column;justify-content:center;min-width:200px;max-width:260px;flex-shrink:0;}
+.ecard-left h3{font-size:15px;font-weight:700;margin-bottom:5px;line-height:1.35;}
+.ecard-left p{font-size:12px;color:rgba(255,255,255,.65);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ecard-right{padding:16px 22px;display:flex;align-items:center;justify-content:space-between;flex:1;gap:14px;flex-wrap:wrap;}
+.ecard-meta{display:flex;gap:clamp(14px,2.5vw,28px);flex-wrap:wrap;}
+.ecard-meta .em .eml{font-size:10.5px;color:var(--g300);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+.ecard-meta .em .emv{font-size:17px;font-weight:800;color:var(--g700);}
+.ecard-action{flex-shrink:0;}.ecard-action .btn{min-width:130px;}
 
-/* EXAM LAYOUT */
-.exam-shell{display:flex;flex:1;overflow:hidden;height:calc(100vh - 56px - 48px);height:calc(100dvh - 56px - 48px);}
+/* Exam shell */
+.exam-shell{display:flex;flex:1;overflow:hidden;height:calc(100vh - 60px - 52px);}
 .exam-left{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px);background:var(--bg);}
-.exam-right{width:280px;background:var(--card);border-left:1.5px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
-.er-head{padding:14px 16px;border-bottom:1.5px solid var(--g150);background:var(--g50);}
-.er-head-title{font-size:14px;font-weight:800;color:var(--g700);}
+.exam-right{width:280px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.er-head{padding:14px 16px;border-bottom:1px solid var(--border);}
+.er-head-title{font-size:13px;font-weight:700;color:var(--g700);}
 .er-head-sub{font-size:12px;color:var(--g400);margin-top:2px;}
 .er-body{padding:14px 16px;flex:1;overflow-y:auto;}
-.er-foot{padding:14px 16px;border-top:1.5px solid var(--g150);background:var(--g50);}
+.er-foot{padding:12px 16px;border-top:1px solid var(--border);background:var(--g50);}
 
-.qgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-.qd{aspect-ratio:1;border:2px solid var(--g200);border-radius:var(--r);background:var(--card);cursor:pointer;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--g400);min-height:38px;}
-.qd:hover{border-color:var(--p);color:var(--p);}
+/* Question nav grid */
+.qgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
+.qd{aspect-ratio:1;border:1.5px solid var(--border);border-radius:var(--r);background:#fff;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--g400);min-height:38px;}
+.qd:hover{border-color:var(--p);color:var(--p);background:var(--pp);}
 .qd.ans{background:var(--green);color:#fff;border-color:var(--green);}
 .qd.ans:hover{background:var(--green-d);}
-.qd.cur{border-color:var(--p);box-shadow:0 0 0 3px var(--pl);color:var(--p);background:var(--pp);}
-.qd.ans.cur{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 0 0 3px rgba(67,160,71,.2);}
-
-.ans-summary{margin-top:14px;padding:12px;background:var(--g50);border-radius:var(--r);border:1.5px solid var(--border);}
-.ans-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;font-weight:700;}
+.qd.cur{border-color:var(--p);background:var(--pl);color:var(--p);font-weight:700;}
+.qd.ans.cur{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 2px rgba(5,150,105,.25);}
+.ans-summary{padding:12px;background:var(--g50);border-radius:var(--rm);border:1px solid var(--border);}
+.ans-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;}
 .ans-row:not(:last-child){border-bottom:1px solid var(--g150);}
-.ans-row .al{color:var(--g500);}.ans-row .av{font-weight:900;}.ans-row .av.gr{color:var(--green-d);}.ans-row .av.gy{color:var(--g400);}
+.ans-row .al{color:var(--g400);}.ans-row .av{font-weight:700;color:var(--g700);}
+.ans-row .av.gr{color:var(--green-d);}.ans-row .av.gy{color:var(--g400);}
+.leg{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--g400);}
+.leg-d{width:13px;height:13px;border-radius:3px;border:1.5px solid var(--border);}
+.leg-d.la{background:var(--green);border-color:var(--green);}
+.leg-d.lc{background:var(--pl);border-color:var(--p);}
+.leg-d.ln{background:#fff;}
+</style>
 
-.leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;}
-.leg-i{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--g500);font-weight:600;}
-.leg-d{width:14px;height:14px;border-radius:4px;border:2px solid var(--g200);}
-.leg-d.la{background:var(--green);border-color:var(--green);}.leg-d.lc{background:var(--pp);border-color:var(--p);}.leg-d.ln{background:var(--card);}
-
-.tbar{background:var(--card);padding:8px clamp(14px,2.5vw,28px);border-bottom:1.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:56px;z-index:99;flex-wrap:wrap;gap:8px;height:48px;}
-.tbar-info{font-size:14px;color:var(--g500);font-weight:600;}.tbar-info strong{color:var(--p);}
-.tdisp{font-family:var(--font);font-size:clamp(18px,2.5vw,22px);font-weight:900;color:var(--red-d);background:var(--red-l);padding:5px 16px;border-radius:var(--r);letter-spacing:1px;}
+<style>
+/* Timer bar */
+.tbar{background:#fff;border-bottom:1px solid var(--border);padding:0 clamp(16px,2.5vw,32px);display:flex;justify-content:space-between;align-items:center;position:sticky;top:60px;z-index:99;gap:8px;height:52px;}
+.tbar-info{font-size:13.5px;color:var(--g400);font-weight:500;}
+.tbar-info strong{color:var(--p);font-weight:700;}
+.tdisp{font-family:'Inter',monospace;font-size:clamp(15px,2vw,19px);font-weight:700;color:var(--red);background:var(--red-l);padding:5px 16px;border-radius:var(--rm);letter-spacing:1.5px;border:1px solid #FECACA;}
 .tdisp.crit{animation:bk .6s ease infinite;}
 @keyframes bk{0%,100%{opacity:1;}50%{opacity:.2;}}
-.mob-tog{display:none;background:var(--p);color:#fff;border:none;padding:6px 12px;border-radius:var(--r);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.mob-tog{display:none;background:var(--pl);color:var(--p);border:1px solid #BFDBFE;padding:6px 12px;border-radius:var(--rm);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;}
 
-.qc{background:var(--card);border-radius:var(--rl);border:1.5px solid var(--border);padding:clamp(16px,2.5vw,28px);margin-bottom:14px;}
-.qc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--g150);}
-.ql{font-size:13px;font-weight:900;color:var(--p);background:var(--pl);padding:4px 12px;border-radius:var(--rf);}
-.qt{font-size:clamp(16px,2vw,19px);font-weight:700;color:var(--g800);line-height:1.7;margin-bottom:20px;word-break:break-word;}
+/* Question card */
+.qc{background:#fff;border-radius:var(--rl);border:1px solid var(--border);padding:clamp(16px,2.5vw,28px);margin-bottom:14px;box-shadow:var(--sh1);}
+.qc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.ql{font-size:12px;font-weight:700;color:var(--p);background:var(--pl);padding:4px 12px;border-radius:var(--rf);}
+.qt{font-size:clamp(15px,1.8vw,17px);font-weight:500;color:var(--g700);line-height:1.8;margin-bottom:20px;word-break:break-word;}
 .opts{display:flex;flex-direction:column;gap:10px;}
-.oi{display:flex;align-items:center;gap:14px;padding:12px 16px;border:2px solid var(--g200);border-radius:var(--rm);cursor:pointer;transition:all .15s;min-height:48px;}
-.oi:hover{border-color:rgba(108,99,255,.25);background:var(--pp);}
-.oi.sel{border-color:var(--p);background:var(--pl);box-shadow:var(--ring);}
+.oi{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--rm);cursor:pointer;transition:all .15s;min-height:48px;}
+.oi:hover{border-color:var(--p);background:var(--pp);}
+.oi.sel{border-color:var(--p);background:var(--pl);}
 .oi input{display:none;}
-.orad{width:22px;height:22px;border:2.5px solid var(--g300);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.orad{width:20px;height:20px;border:2px solid var(--g200);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
 .oi.sel .orad{border-color:var(--p);background:var(--p);}
-.oi.sel .orad::after{content:'';width:8px;height:8px;background:#fff;border-radius:50%;}
-.oi .ot{font-size:clamp(14px,1.6vw,16px);color:var(--g700);flex:1;line-height:1.55;font-weight:600;word-break:break-word;}
-.oi .ol{font-weight:900;color:#fff;font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--g300);border-radius:var(--r);flex-shrink:0;}
-.oi.sel .ol{background:var(--p);}
-.oi.co{border-color:var(--green);background:var(--green-l);}.oi.co .ol{background:var(--green);}
-.oi.wo{border-color:var(--red);background:var(--red-l);}.oi.wo .ol{background:var(--red);}
+.oi.sel .orad::after{content:'';width:7px;height:7px;background:#fff;border-radius:50%;}
+.oi .ot{font-size:clamp(13.5px,1.5vw,15px);color:var(--g600);flex:1;line-height:1.6;font-weight:400;word-break:break-word;}
+.oi .ol{font-weight:700;color:var(--g400);font-size:13px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--g100);border-radius:var(--r);flex-shrink:0;}
+.oi.sel .ol{background:var(--p);color:#fff;}
+.oi.co{border-color:#6EE7B7;background:#ECFDF5;}.oi.co .ol{background:var(--green);color:#fff;}
+.oi.wo{border-color:#FCA5A5;background:var(--red-l);}.oi.wo .ol{background:var(--red);color:#fff;}
+.para-box{margin-bottom:18px;padding:16px 20px;background:#F8FBFF;border:1px solid #DBEAFE;border-left:4px solid var(--p);border-radius:0 var(--rm) var(--rm) 0;}
+.para-label{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.para-text{font-size:14px;color:var(--g600);line-height:1.85;white-space:pre-line;}
+.expbox{margin-top:18px;padding:14px 18px;background:#F0FDF4;border:1px solid #A7F3D0;border-left:4px solid var(--green);border-radius:0 var(--rm) var(--rm) 0;}
+.expbox .exp-head{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.expbox .exp-icon{width:24px;height:24px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;}
+.expbox .exp-label{font-size:11px;font-weight:700;color:var(--green-d);text-transform:uppercase;letter-spacing:.06em;}
+.expbox .exp-text{color:var(--g600);font-weight:400;line-height:1.8;font-size:14px;}
+.q-btns{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1px solid var(--border);}
 
-.para-box{margin-bottom:18px;padding:18px 20px;background:var(--g50);border:1.5px solid var(--border);border-left:4px solid var(--p);border-radius:0 var(--rm) var(--rm) 0;}
-.para-label{font-size:12px;font-weight:900;color:var(--p);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
-.para-text{font-size:15px;color:var(--g700);line-height:1.8;white-space:pre-line;}
+/* Results */
+.rh{background:#fff;border:1px solid var(--border);border-radius:var(--rxl);padding:clamp(24px,4vw,44px);text-align:center;margin-bottom:22px;box-shadow:var(--sh2);}
+.rh .re{font-size:clamp(15px,2vw,18px);font-weight:700;color:var(--g700);}
+.rh .rl2{font-size:11.5px;font-weight:600;color:var(--g300);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+.rh .rv{font-size:clamp(44px,8vw,64px);font-weight:800;background:linear-gradient(135deg,var(--p),var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:10px 0;letter-spacing:-2px;}
+.rh .rn{font-size:14px;color:var(--g400);}
+.rsr{display:flex;justify-content:center;gap:clamp(8px,1.5vw,16px);margin-top:22px;flex-wrap:wrap;}
+.rs{text-align:center;padding:14px clamp(14px,2vw,24px);background:var(--g50);border-radius:var(--rl);border:1px solid var(--border);min-width:80px;}
+.rs .rsv{font-size:clamp(20px,3vw,28px);font-weight:800;color:var(--g700);}
+.rs .rsl{font-size:11px;font-weight:600;color:var(--g300);text-transform:uppercase;margin-top:3px;letter-spacing:.04em;}
+.rs.c{border-color:#6EE7B7;background:#ECFDF5;}.rs.c .rsv{color:var(--green-d);}
+.rs.w{border-color:#FCA5A5;background:var(--red-l);}.rs.w .rsv{color:var(--red-d);}
 
-.expbox{margin-top:18px;padding:18px 20px;background:var(--pl);border:1.5px solid rgba(108,99,255,.1);border-left:4px solid var(--p);border-radius:0 var(--rm) var(--rm) 0;}
-.expbox .exp-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.expbox .exp-icon{width:26px;height:26px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;}
-.expbox .exp-label{font-size:13px;font-weight:900;color:var(--p);text-transform:uppercase;letter-spacing:.05em;}
-.expbox .exp-text{color:var(--g700);font-weight:600;line-height:1.75;font-size:15px;}
-
-.q-btns{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:14px;border-top:1.5px solid var(--g150);}
-
-.rh{background:var(--card);border:1.5px solid var(--border);border-radius:var(--rxl);padding:clamp(24px,4vw,40px);text-align:center;margin-bottom:22px;}
-.rh .re{font-size:clamp(16px,2vw,20px);font-weight:800;color:var(--g700);}
-.rh .rl2{font-size:12px;font-weight:800;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
-.rh .rv{font-size:clamp(40px,8vw,60px);font-weight:900;color:var(--p);margin:10px 0;letter-spacing:-2px;}
-.rh .rn{font-size:14px;color:var(--g500);}
-.rsr{display:flex;justify-content:center;gap:clamp(8px,1.5vw,18px);margin-top:20px;flex-wrap:wrap;}
-.rs{text-align:center;padding:12px clamp(14px,2vw,22px);background:var(--g50);border-radius:var(--rm);border:1.5px solid var(--border);min-width:75px;}
-.rs .rsv{font-size:clamp(20px,3vw,26px);font-weight:900;color:var(--g800);}
-.rs .rsl{font-size:11px;font-weight:800;color:var(--g400);text-transform:uppercase;margin-top:2px;}
-.rs.c .rsv{color:var(--green-d);}.rs.c{border-color:var(--green);background:var(--green-l);}
-.rs.w .rsv{color:var(--red-d);}.rs.w{border-color:var(--red);background:var(--red-l);}
-
-.mbg{position:fixed;inset:0;background:rgba(0,0,0,.3);display:none;align-items:flex-start;justify-content:center;padding:clamp(20px,4vw,48px) 14px;z-index:1000;overflow-y:auto;backdrop-filter:blur(4px);}
+/* Modals */
+.mbg{position:fixed;inset:0;background:rgba(17,24,39,.4);display:none;align-items:flex-start;justify-content:center;padding:clamp(20px,4vw,52px) 16px;z-index:1000;overflow-y:auto;backdrop-filter:blur(4px);}
 .mbg.open{display:flex;}
-.mbox{background:var(--card);border-radius:var(--rl);width:100%;max-width:580px;box-shadow:var(--sh3);animation:mI .3s ease;border:1.5px solid var(--border);}
-@keyframes mI{from{transform:translateY(-12px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.mt2{padding:14px 20px;border-bottom:1.5px solid var(--g150);display:flex;justify-content:space-between;align-items:center;background:var(--g50);}
-.mt2 h3{font-size:16px;font-weight:800;}
-.mx{width:32px;height:32px;border:none;background:var(--g200);border-radius:50%;cursor:pointer;font-size:16px;color:var(--g500);display:flex;align-items:center;justify-content:center;}
+.mbox{background:#fff;border-radius:var(--rxl);width:100%;max-width:580px;box-shadow:var(--sh3);animation:mI .3s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--border);}
+@keyframes mI{from{transform:translateY(-16px) scale(.97);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.mt2{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.mt2 h3{font-size:15px;font-weight:700;color:var(--g700);}
+.mx{width:30px;height:30px;border:none;background:var(--g100);border-radius:50%;cursor:pointer;font-size:16px;color:var(--g400);display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .mx:hover{background:var(--red-l);color:var(--red);}
 .mm{padding:20px;max-height:60vh;overflow-y:auto;}
-.mb2{padding:14px 20px;border-top:1.5px solid var(--g150);display:flex;justify-content:flex-end;gap:8px;background:var(--g50);}
+.mb2{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--g50);}
 
-.empty{text-align:center;padding:clamp(28px,4vw,48px) 16px;}.empty .ei{font-size:40px;margin-bottom:12px;opacity:.25;}.empty .et{font-size:15px;color:var(--g400);font-weight:600;}
+/* Misc */
+.empty{text-align:center;padding:clamp(28px,4vw,52px) 16px;}
+.empty .ei{font-size:40px;margin-bottom:12px;opacity:.25;}
+.empty .et{font-size:14px;color:var(--g300);font-weight:500;}
 .ar{display:flex;gap:4px;flex-wrap:wrap;}
-.login-w{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,28px);background:var(--bg);}
-.login-c{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh2);width:100%;max-width:380px;border:1.5px solid var(--border);}
-.name-w{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vw,28px);background:var(--bg);}
+.login-w{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(16px,3vw,32px);background:var(--bg);}
+.login-c{background:#fff;border-radius:var(--rxl);box-shadow:var(--sh2);width:100%;max-width:400px;border:1px solid var(--border);}
+.name-w{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(16px,3vw,32px);background:var(--bg);}
 
+/* Landing — Testbook style */
+.lnav{background:#fff;border-bottom:1px solid var(--border);padding:0 clamp(16px,3vw,40px);height:60px;display:flex;align-items:center;justify-content:space-between;}
+.llogo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--g800);letter-spacing:-.3px;}
+.llogo .lm{width:34px;height:34px;background:var(--p);border-radius:var(--rm);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;}
+.lhero{flex:1;display:flex;align-items:stretch;background:var(--bg);}
+.hero-left{flex:1.1;padding:clamp(32px,6vw,72px) clamp(20px,5vw,60px);display:flex;flex-direction:column;justify-content:center;background:#fff;}
+.hero-right{flex:.9;background:linear-gradient(135deg,var(--pp) 0%,#F0F5FF 100%);display:flex;align-items:center;justify-content:center;padding:clamp(24px,4vw,56px);}
+.hero-right-inner{background:#fff;border-radius:var(--rxl);box-shadow:var(--sh3);padding:clamp(22px,3vw,36px);max-width:380px;width:100%;border:1px solid var(--border);}
+.hpill{display:inline-flex;align-items:center;gap:6px;background:var(--pl);color:var(--p);padding:6px 14px;border-radius:var(--rf);font-size:12px;font-weight:600;margin-bottom:18px;}
+.hero-left h1{font-size:clamp(24px,4vw,44px);font-weight:800;color:var(--g800);line-height:1.15;letter-spacing:-.5px;margin-bottom:14px;}
+.hero-left h1 span{color:var(--p);}
+.hsub{font-size:clamp(14px,1.6vw,16px);color:var(--g400);line-height:1.75;margin-bottom:28px;}
+.hfeats{display:flex;gap:clamp(12px,1.8vw,22px);flex-wrap:wrap;margin-top:22px;}
+.hfeat{display:flex;align-items:center;gap:7px;color:var(--g400);font-size:13px;font-weight:500;}
+.hfeat .hfd{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.login-form-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--g800);}
+.login-form-sub{font-size:13px;color:var(--g400);text-align:center;margin-bottom:20px;}
+.inst-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--rm);padding:12px 14px;margin-bottom:16px;font-size:13px;color:#92400E;line-height:1.65;}
+.inst-box strong{display:block;margin-bottom:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.sec-hd{margin-bottom:16px;}
+.sec-hd h2{font-size:clamp(17px,2.5vw,22px);font-weight:700;color:var(--g800);}
+.sec-hd p{font-size:13px;color:var(--g400);margin-top:3px;}
+
+/* Responsive */
 @media(max-width:768px){
   html{font-size:15px;}
-  .exam-shell{flex-direction:column;height:auto;}.exam-left{overflow-y:visible;}.exam-right{width:100%;border-left:none;border-top:1.5px solid var(--border);}
+  .exam-shell{flex-direction:column;height:auto;}
+  .exam-left{overflow-y:visible;}.exam-right{width:100%;border-left:none;border-top:1px solid var(--border);}
   .exam-right.collapsed .er-body,.exam-right.collapsed .er-foot{display:none;}
-  .mob-tog{display:inline-flex;}.top{height:50px;}.tbar{top:50px;height:44px;}
-  .qgrid{grid-template-columns:repeat(6,1fr);gap:5px;}
+  .mob-tog{display:inline-flex;}.top{height:54px;}.tbar{top:54px;height:48px;}
+  .qgrid{grid-template-columns:repeat(6,1fr);}
   .ecard{flex-direction:column;}
   .ecard-left{min-width:auto;max-width:none;padding:16px 18px;}
   .ecard-right{padding:14px 18px;flex-direction:column;align-items:flex-start;}
   .ecard-action{width:100%;}.ecard-action .btn{width:100%;}
+  .lhero{flex-direction:column;}
+  .hero-right{display:none;}
 }
-@media(max-width:480px){.hc h1{font-size:24px;}.hbtns{flex-direction:column;align-items:stretch;}.qgrid{grid-template-columns:repeat(5,1fr);}}
+@media(max-width:480px){
+  .hero-left h1{font-size:22px;}
+  .qgrid{grid-template-columns:repeat(5,1fr);}
+}
 </style>
-</head>
-<body>
 
-<div id="loader"><div class="spin"></div></div>
-<div id="toastBox"></div>
-<div id="tabWarning"><div class="tw-box"><div class="tw-icon">⚠️</div><div class="tw-title" id="twTitle">Warning!</div><div class="tw-msg" id="twMsg"></div><div class="tw-count" id="twCount"></div><div><button class="btn btn-p btn-lg" onclick="dismissWarn()">Continue Exam</button></div></div></div>
+<!-- TAB WARNING -->
+<div id="tabWarning"><div class="tw-box"><div class="tw-icon">⚠️</div><div class="tw-title" id="twTitle">Warning!</div><div class="tw-msg" id="twMsg"></div><div class="tw-count" id="twCount"></div><div><button class="btn btn-d btn-lg" onclick="dismissWarn()">I Understand — Continue</button></div></div></div>
 
-<!-- LANDING -->
+<!-- LANDING PAGE -->
 <div class="page active" id="pgLanding">
-  <nav class="lnav"><div class="llogo"><div class="lm">E</div>ExamPro</div><button class="btn btn-o btn-sm" onclick="goPage('pgAdminLogin')">Admin</button></nav>
-  <div class="lhero"><div class="hc">
-    <div class="hpill">✦ Online Examination Portal</div>
-    <h1>Your Path to<br><span>Exam Success</span></h1>
-    <p class="hsub">Take exams with real patterns, timed tests, negative marking, instant results and detailed explanations.</p>
-    <div class="hbtns"><button class="btn btn-p btn-xl" onclick="goPage('pgStudentHome')">Start Exam →</button><button class="btn btn-o btn-lg" onclick="goPage('pgAdminLogin')">Admin Panel</button></div>
-    <div class="hfeats"><div class="hfeat"><div class="hfd"></div>Timed</div><div class="hfeat"><div class="hfd"></div>Auto Grading</div><div class="hfeat"><div class="hfd"></div>Negative Marking</div><div class="hfeat"><div class="hfd"></div>PDF Reports</div></div>
-  </div></div>
-  <footer class="foot">© 2025 ExamPro · Developed by <b>Pankaj Thakur</b></footer>
+  <nav class="lnav">
+    <div class="llogo"><div class="lm">E</div>ExamPro</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn btn-o btn-sm" onclick="goPage('pgStudentHome')">Take a Test</button>
+      <button class="btn btn-p btn-sm" onclick="goPage('pgAdminLogin')">Admin Login</button>
+    </div>
+  </nav>
+  <div class="lhero">
+    <div class="hero-left">
+      <div class="hpill">🎯 Online Test Series</div>
+      <h1>Prepare Smarter.<br>Score <span>Higher.</span></h1>
+      <p class="hsub">Attempt timed mock tests with negative marking, instant evaluation, detailed solutions, and downloadable score reports — all in one place.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-p btn-xl" onclick="goPage('pgStudentHome')">Start a Free Test →</button>
+        <button class="btn btn-o btn-lg" onclick="goPage('pgAdminLogin')">Admin Dashboard</button>
+      </div>
+      <div class="hfeats">
+        <div class="hfeat"><div class="hfd"></div>Timed Tests</div>
+        <div class="hfeat"><div class="hfd"></div>Negative Marking</div>
+        <div class="hfeat"><div class="hfd"></div>Auto Evaluation</div>
+        <div class="hfeat"><div class="hfd"></div>PDF Reports</div>
+        <div class="hfeat"><div class="hfd"></div>Detailed Solutions</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-right-inner">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:52px;height:52px;background:var(--pl);border-radius:var(--rm);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;">📝</div>
+          <div class="login-form-title">Start Your Test</div>
+          <div class="login-form-sub">Select an exam and begin immediately</div>
+        </div>
+        <div class="inst-box">
+          <strong>⚠️ Before you begin</strong>
+          Do not switch tabs during the exam. Tab switching triggers warnings and auto-submission after 2 violations.
+        </div>
+        <button class="btn btn-p btn-xl" style="width:100%;" onclick="goPage('pgStudentHome')">Browse Available Tests →</button>
+        <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--g300);">Best viewed on Chrome or Firefox</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; Developed by <b>Pankaj Thakur</b></footer>
 </div>
 
 <!-- ADMIN LOGIN -->
-<div class="page" id="pgAdminLogin"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Admin</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgLanding')">← Home</button></div>
-<div class="login-w"><div class="login-c"><div class="card-b" style="padding:clamp(22px,3vw,32px);"><div style="text-align:center;margin-bottom:22px;"><div style="font-size:36px;margin-bottom:10px;">🔐</div><h2 style="font-size:20px;font-weight:900;">Admin Sign In</h2><p style="color:var(--g400);font-size:14px;">Enter credentials</p></div><div class="fg"><label class="fl">Username</label><input type="text" id="inpU" class="fc" placeholder="Username" autocomplete="off"></div><div class="fg"><label class="fl">Password</label><input type="password" id="inpP" class="fc" placeholder="Password"></div><button class="btn btn-p btn-lg" style="width:100%;" onclick="doLogin()">Sign In</button></div></div></div>
-<footer class="foot">© 2025 ExamPro · Developed by <b>Pankaj Thakur</b></footer></div>
+<div class="page" id="pgAdminLogin">
+  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span>Admin Login</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgLanding')">← Home</button></div>
+  <div class="login-w"><div class="login-c">
+    <div class="card-b" style="padding:clamp(24px,3vw,36px);">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="width:52px;height:52px;background:var(--pl);border-radius:var(--rm);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 14px;">🔐</div>
+        <div class="login-form-title">Admin Sign In</div>
+        <div class="login-form-sub">Enter your administrator credentials</div>
+      </div>
+      <div class="fg"><label class="fl">Username</label><input type="text" id="inpU" class="fc" placeholder="Enter username" autocomplete="off"></div>
+      <div class="fg"><label class="fl">Password</label><input type="password" id="inpP" class="fc" placeholder="Enter password"></div>
+      <button class="btn btn-p btn-lg" style="width:100%;margin-top:4px;" onclick="doLogin()">Sign In →</button>
+    </div>
+  </div></div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; Developed by <b>Pankaj Thakur</b></footer>
+</div>
 
-<!-- ADMIN -->
-<div class="page" id="pgAdmin"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Dashboard</span></div><div class="top-a"><span class="top-badge">Admin</span><button class="btn btn-logout btn-sm" onclick="goPage('pgLanding')">Logout</button></div></div>
-<div class="wrap">
-  <div class="atabs"><button class="atab active" onclick="aTab('tcE',this)">All Exams</button><button class="atab" onclick="aTab('tcC',this)">Create Exam</button><button class="atab" onclick="aTab('tcS',this)">Submissions</button></div>
-  <div class="tc active" id="tcE"><div class="card"><div class="card-h"><h3>All Exams</h3><button class="btn btn-o btn-sm" onclick="loadExams()">Refresh</button></div><div class="card-b" style="padding:0;"><div class="tw2"><table><thead><tr><th>Title</th><th>Duration</th><th>+Marks</th><th>−Marks</th><th>Status</th><th>Questions</th><th>Actions</th></tr></thead><tbody id="tblE"><tr><td colspan="7" style="text-align:center;padding:36px;color:var(--g300);">Loading...</td></tr></tbody></table></div></div></div></div>
-  <div class="tc" id="tcC"><div class="card"><div class="card-h"><h3>Create Exam</h3></div><div class="card-b"><div class="g2"><div class="fg"><label class="fl">Title *</label><input type="text" id="cT" class="fc" placeholder="Exam title"></div><div class="fg"><label class="fl">Duration (min) *</label><input type="number" id="cD" class="fc" placeholder="60"></div></div><div class="fg"><label class="fl">Description</label><textarea id="cDe" class="fc" placeholder="Description..."></textarea></div><div class="g3"><div class="fg"><label class="fl">Total Marks</label><input type="number" id="cTM" class="fc" placeholder="100"></div><div class="fg"><label class="fl">Marks/Q *</label><input type="number" step="0.5" id="cPQ" class="fc" placeholder="1"></div><div class="fg"><label class="fl">Negative</label><input type="number" step="0.25" id="cN" class="fc" value="0.25"></div></div><button class="btn btn-p btn-lg" onclick="createExam()">Create Exam</button></div></div></div>
-  <div class="tc" id="tcS"><div class="card"><div class="card-h"><h3>Submissions</h3><select id="selSE" class="fc" style="width:auto;min-width:200px;" onchange="loadSubs()"><option value="">Select Exam</option></select></div><div class="card-b" style="padding:0;"><div class="tw2"><table><thead><tr><th>#</th><th>Student</th><th>Score</th><th>✓</th><th>✕</th><th>Skip</th><th>Date</th><th>Actions</th></tr></thead><tbody id="tblS"><tr><td colspan="8" style="text-align:center;padding:36px;color:var(--g300);">Select exam</td></tr></tbody></table></div></div></div></div>
-</div><footer class="foot">© 2025 ExamPro · Developed by <b>Pankaj Thakur</b></footer></div>
+<!-- ADMIN DASHBOARD -->
+<div class="page" id="pgAdmin">
+  <div class="top">
+    <div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span>Admin Dashboard</span></div>
+    <div class="top-a"><span class="top-badge">Admin</span><button class="btn btn-logout btn-sm" onclick="goPage('pgLanding')">Logout</button></div>
+  </div>
+  <div class="wrap">
+    <div class="atabs">
+      <button class="atab active" onclick="aTab('tcE',this)">All Exams</button>
+      <button class="atab" onclick="aTab('tcC',this)">Create Exam</button>
+      <button class="atab" onclick="aTab('tcS',this)">Submissions</button>
+    </div>
+    <div class="tc active" id="tcE">
+      <div class="card">
+        <div class="card-h"><h3>All Examinations</h3><button class="btn btn-o btn-sm" onclick="loadExams()">↻ Refresh</button></div>
+        <div class="card-b" style="padding:0;">
+          <div class="tw2"><table><thead><tr><th>Examination Title</th><th>Duration</th><th>+Marks</th><th>−Marks</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tblE"><tr><td colspan="6" style="text-align:center;padding:36px;color:var(--g300);">Loading...</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </div>
+    <div class="tc" id="tcC">
+      <div class="card">
+        <div class="card-h"><h3>Create New Examination</h3></div>
+        <div class="card-b">
+          <div class="g2">
+            <div class="fg"><label class="fl">Exam Title *</label><input type="text" id="cT" class="fc" placeholder="e.g. SSC CGL Tier-I 2025"></div>
+            <div class="fg"><label class="fl">Duration (minutes) *</label><input type="number" id="cD" class="fc" placeholder="60"></div>
+          </div>
+          <div class="fg"><label class="fl">Description</label><textarea id="cDe" class="fc" placeholder="Brief description of the examination..."></textarea></div>
+          <div class="g3">
+            <div class="fg"><label class="fl">Total Marks</label><input type="number" id="cTM" class="fc" placeholder="100"></div>
+            <div class="fg"><label class="fl">Marks per Question *</label><input type="number" step="0.5" id="cPQ" class="fc" placeholder="1"></div>
+            <div class="fg"><label class="fl">Negative Marking</label><input type="number" step="0.25" id="cN" class="fc" value="0.25"></div>
+          </div>
+          <button class="btn btn-p btn-lg" onclick="createExam()">Create Examination</button>
+        </div>
+      </div>
+    </div>
+    <div class="tc" id="tcS">
+      <div class="card">
+        <div class="card-h">
+          <h3>Candidate Submissions</h3>
+          <select id="selSE" class="fc" style="width:auto;min-width:220px;" onchange="loadSubs()"><option value="">— Select Examination —</option></select>
+        </div>
+        <div class="card-b" style="padding:0;">
+          <div class="tw2"><table><thead><tr><th>#</th><th>Candidate Name</th><th>Score</th><th>Correct</th><th>Wrong</th><th>Skipped</th><th>Date &amp; Time</th><th>Actions</th></tr></thead>
+          <tbody id="tblS"><tr><td colspan="8" style="text-align:center;padding:36px;color:var(--g300);">Select an examination to view submissions</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; Developed by <b>Pankaj Thakur</b></footer>
+</div>
 
-<!-- QUESTIONS -->
-<div class="page" id="pgQ"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span id="mqT"></span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div><div class="wrap"><div class="fb" style="margin-bottom:18px;"><div style="display:flex;gap:8px;"><button class="btn btn-p" onclick="openAddQ()">+ Add</button><button class="btn btn-o" onclick="openBulkQ()">Bulk Import</button></div><button class="btn btn-o btn-sm" onclick="loadQ(CE)">Refresh</button></div><div id="qList"></div></div><footer class="foot">© 2025 ExamPro · <b>Pankaj Thakur</b></footer></div>
+<!-- MANAGE QUESTIONS -->
+<div class="page" id="pgQ">
+  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span id="mqT"></span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div>
+  <div class="wrap">
+    <div class="fb" style="margin-bottom:16px;">
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-p" onclick="openAddQ()">+ Add Question</button>
+        <button class="btn btn-o" onclick="openBulkQ()">📂 Bulk Import</button>
+      </div>
+      <button class="btn btn-o btn-sm" onclick="loadQ(CE)">↻ Refresh</button>
+    </div>
+    <div id="qList"></div>
+  </div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; <b>Pankaj Thakur</b></footer>
+</div>
 
 <!-- EDIT EXAM -->
-<div class="page" id="pgEE"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Edit</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div><div class="wrap" style="max-width:640px;"><div class="card"><div class="card-h"><h3>Edit Exam</h3></div><div class="card-b"><input type="hidden" id="eID"><div class="g2"><div class="fg"><label class="fl">Title *</label><input type="text" id="eT" class="fc"></div><div class="fg"><label class="fl">Duration *</label><input type="number" id="eD" class="fc"></div></div><div class="fg"><label class="fl">Description</label><textarea id="eDe" class="fc"></textarea></div><div class="g3"><div class="fg"><label class="fl">Total</label><input type="number" id="eTM" class="fc"></div><div class="fg"><label class="fl">Marks/Q</label><input type="number" step="0.5" id="ePQ" class="fc"></div><div class="fg"><label class="fl">Negative</label><input type="number" step="0.25" id="eN" class="fc"></div></div><button class="btn btn-p btn-lg" onclick="saveEE()">Save</button></div></div></div><footer class="foot">© 2025 ExamPro · <b>Pankaj Thakur</b></footer></div>
+<div class="page" id="pgEE">
+  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span>Edit Exam</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div>
+  <div class="wrap" style="max-width:680px;">
+    <div class="card">
+      <div class="card-h"><h3>Edit Examination Details</h3></div>
+      <div class="card-b">
+        <input type="hidden" id="eID">
+        <div class="g2">
+          <div class="fg"><label class="fl">Title *</label><input type="text" id="eT" class="fc"></div>
+          <div class="fg"><label class="fl">Duration (min) *</label><input type="number" id="eD" class="fc"></div>
+        </div>
+        <div class="fg"><label class="fl">Description</label><textarea id="eDe" class="fc"></textarea></div>
+        <div class="g3">
+          <div class="fg"><label class="fl">Total Marks</label><input type="number" id="eTM" class="fc"></div>
+          <div class="fg"><label class="fl">Marks/Question</label><input type="number" step="0.5" id="ePQ" class="fc"></div>
+          <div class="fg"><label class="fl">Negative</label><input type="number" step="0.25" id="eN" class="fc"></div>
+        </div>
+        <button class="btn btn-p btn-lg" onclick="saveEE()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; <b>Pankaj Thakur</b></footer>
+</div>
 
 <!-- SUBMISSION DETAIL -->
-<div class="page" id="pgSD"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Result</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div><div class="wrap" id="sdW"></div><footer class="foot">© 2025 ExamPro · <b>Pankaj Thakur</b></footer></div>
+<div class="page" id="pgSD">
+  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span>Result Detail</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgAdmin');loadExams();">← Back</button></div>
+  <div class="wrap" id="sdW"></div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; <b>Pankaj Thakur</b></footer>
+</div>
 
 <!-- STUDENT HOME -->
 <div class="page" id="pgStudentHome">
-  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Exams</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgLanding')">← Home</button></div>
+  <div class="top">
+    <div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span>Test Series</span></div>
+    <button class="btn btn-o btn-sm" onclick="goPage('pgLanding')">← Home</button>
+  </div>
   <div class="wrap">
-    <div style="margin-bottom:8px;">
-      <h2 style="font-size:clamp(18px,3vw,24px);font-weight:900;">Available Exams</h2>
-      <p class="exam-count" id="examCount">Loading exams...</p>
+    <div class="sec-hd">
+      <h2>Available Tests</h2>
+      <p class="exam-count" id="examCount">Loading tests...</p>
     </div>
     <div class="search-wrap">
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="examSearch" placeholder="Search exams by name..." oninput="filterExams()">
+        <input type="text" id="examSearch" placeholder="Search tests..." oninput="filterExams()">
         <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
       </div>
     </div>
     <div id="sExams" class="exam-list">
-      <div class="empty"><div class="ei">⏳</div><div class="et">Loading...</div></div>
+      <div class="empty"><div class="ei">⏳</div><div class="et">Loading examinations...</div></div>
     </div>
   </div>
-  <footer class="foot">© 2025 ExamPro · Developed by <b>Pankaj Thakur</b></footer>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; Developed by <b>Pankaj Thakur</b></footer>
 </div>
 
-<!-- STUDENT NAME -->
-<div class="page" id="pgSN"><div class="top"><div class="top-t"><span id="snT"></span></div><button class="btn btn-o btn-sm" onclick="goPage('pgStudentHome');loadSE();">← Back</button></div><div class="name-w"><div class="card" style="width:100%;max-width:400px;"><div class="card-b" style="padding:clamp(22px,3vw,32px);text-align:center;"><div style="font-size:36px;margin-bottom:14px;">📝</div><h2 style="font-size:20px;font-weight:900;margin-bottom:4px;">Enter Your Name</h2><p id="snI" style="color:var(--g400);font-size:14px;margin-bottom:20px;"></p><div class="fg"><input type="text" id="inpSN" class="fc" placeholder="Full Name" style="text-align:center;font-size:17px;padding:14px;"></div><button class="btn btn-p btn-xl" style="width:100%;" onclick="beginExam()">Start Exam →</button></div></div></div><footer class="foot">© 2025 ExamPro · <b>Pankaj Thakur</b></footer></div>
+<!-- STUDENT NAME / START PAGE -->
+<div class="page" id="pgSN">
+  <div class="top"><div class="top-t"><span id="snT" style="font-weight:700;color:var(--g700);"></span></div><button class="btn btn-o btn-sm" onclick="goPage('pgStudentHome');loadSE();">← Back</button></div>
+  <div class="name-w">
+    <div class="card" style="width:100%;max-width:480px;border-radius:var(--rxl);box-shadow:var(--sh2);">
+      <div class="card-h" style="background:var(--pp);border-bottom:1px solid var(--border);"><h3 style="color:var(--p);">Start Test</h3></div>
+      <div class="card-b" style="padding:clamp(20px,3vw,32px);">
+        <div class="inst-box">
+          <strong>⚠️ Instructions</strong>
+          <span id="snI"></span><br>
+          Keep a stable internet connection. Do not switch tabs. Wrong answers attract negative marks.
+        </div>
+        <div class="fg"><label class="fl">Your Full Name</label><input type="text" id="inpSN" class="fc" placeholder="Enter your full name" style="font-size:16px;padding:12px 14px;"></div>
+        <button class="btn btn-p btn-xl" style="width:100%;" onclick="beginExam()">Begin Test →</button>
+        <p style="text-align:center;margin-top:10px;font-size:12px;color:var(--g300);">By starting, you agree to follow the test guidelines</p>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">© 2025 ExamPro &nbsp;·&nbsp; <b>Pankaj Thakur</b></footer>
+</div>
 
-<!-- EXAM -->
+<!-- EXAM PAGE -->
 <div class="page" id="pgExam">
-  <div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span id="etT"></span></div><div class="top-a"><span class="top-badge" id="etN"></span><button class="mob-tog" onclick="toggleSB()">☰</button></div></div>
-  <div class="tbar"><div class="tbar-info">Q <strong id="etC">1</strong>/<strong id="etA">0</strong></div><div class="tdisp" id="tD">00:00:00</div><button class="btn btn-d btn-sm" onclick="cSub()">Submit</button></div>
+  <div class="top">
+    <div class="top-t"><span class="br">ExamPro</span><span class="sep">/</span><span id="etT"></span></div>
+    <div class="top-a"><span class="top-badge" id="etN"></span><button class="mob-tog" onclick="toggleSB()">☰ Panel</button></div>
+  </div>
+  <div class="tbar">
+    <div class="tbar-info">Question <strong id="etC">1</strong> / <strong id="etA">0</strong></div>
+    <div class="tdisp" id="tD">00:00:00</div>
+    <button class="btn btn-d btn-sm" onclick="cSub()">Submit Test</button>
+  </div>
   <div class="exam-shell">
-    <div class="exam-left" id="eLeft"><div id="eqW"></div><div class="q-btns"><button class="btn btn-o" id="bP" onclick="nQ(-1)">← Prev</button><button class="btn btn-o" onclick="clA()">Clear</button><button class="btn btn-p" id="bN" onclick="nQ(1)">Next →</button></div></div>
+    <div class="exam-left" id="eLeft">
+      <div id="eqW"></div>
+      <div class="q-btns">
+        <button class="btn btn-o" id="bP" onclick="nQ(-1)">← Previous</button>
+        <button class="btn btn-o" onclick="clA()">Clear Response</button>
+        <button class="btn btn-p" id="bN" onclick="nQ(1)">Next →</button>
+      </div>
+    </div>
     <div class="exam-right" id="eRight">
-      <div class="er-head"><div class="er-head-title">Questions</div><div class="er-head-sub" id="etN2"></div></div>
-      <div class="er-body"><div class="qgrid" id="qN"></div><div class="ans-summary"><div class="ans-row"><span class="al">✅ Answered</span><span class="av gr" id="ansC">0</span></div><div class="ans-row"><span class="al">⬜ Unanswered</span><span class="av gy" id="unansC">0</span></div><div class="ans-row"><span class="al">Total</span><span class="av" id="totC">0</span></div></div><div class="leg"><div class="leg-i"><div class="leg-d la"></div>Done</div><div class="leg-i"><div class="leg-d lc"></div>Current</div><div class="leg-i"><div class="leg-d ln"></div>Pending</div></div></div>
-      <div class="er-foot"><button class="btn btn-d" style="width:100%;" onclick="cSub()">Submit Exam</button></div>
+      <div class="er-head">
+        <div class="er-head-title">Question Navigator</div>
+        <div class="er-head-sub" id="etN2"></div>
+      </div>
+      <div class="er-body">
+        <div class="qgrid" id="qN"></div>
+        <div class="ans-summary">
+          <div class="ans-row"><span class="al">✅ Answered</span><span class="av gr" id="ansC">0</span></div>
+          <div class="ans-row"><span class="al">⬜ Not Answered</span><span class="av gy" id="unansC">0</span></div>
+          <div class="ans-row"><span class="al">Total Questions</span><span class="av" id="totC">0</span></div>
+        </div>
+        <div class="leg">
+          <div class="leg-i"><div class="leg-d la"></div>Answered</div>
+          <div class="leg-i"><div class="leg-d lc"></div>Current</div>
+          <div class="leg-i"><div class="leg-d ln"></div>Not Visited</div>
+        </div>
+      </div>
+      <div class="er-foot"><button class="btn btn-d" style="width:100%;" onclick="cSub()">Submit Examination</button></div>
     </div>
   </div>
 </div>
 
-<!-- RESULTS -->
-<div class="page" id="pgR"><div class="top"><div class="top-t"><span class="br">ExamPro</span><span class="sep">·</span><span>Results</span></div><button class="btn btn-o btn-sm" onclick="goPage('pgStudentHome');loadSE();">← Exams</button></div><div class="wrap" id="rW"></div><footer class="foot">© 2025 ExamPro · <b>Pankaj Thakur</b></footer></div>
+<!-- RESULTS PAGE -->
+<div class="page" id="pgR">
+  <div class="gov-stripe"></div>
+  <div class="top"><div class="top-t"><span class="br">ExamPortal</span><span class="sep">|</span><span>Examination Result</span></div><button class="btn btn-o btn-sm top" onclick="goPage('pgStudentHome');loadSE();">← Examinations</button></div>
+  <div class="wrap" id="rW"></div>
+  <footer class="foot">© 2025 ExamPortal &nbsp;|&nbsp; <b>Pankaj Thakur</b></footer>
+</div>
 
 <!-- MODALS -->
-<div class="mbg" id="mdAQ"><div class="mbox"><div class="mt2"><h3>Add Question</h3><button class="mx" onclick="cM('mdAQ')">✕</button></div><div class="mm"><div class="fg"><label class="fl">Paragraph/Passage (optional)</label><textarea id="aqPara" class="fc" rows="3" placeholder="Shared passage text..."></textarea></div><div class="fg"><label class="fl">Question *</label><textarea id="aqT" class="fc" rows="2" placeholder="Question text..."></textarea></div><div class="g2"><div class="fg"><label class="fl">A *</label><input type="text" id="aqA" class="fc"></div><div class="fg"><label class="fl">B *</label><input type="text" id="aqB" class="fc"></div><div class="fg"><label class="fl">C *</label><input type="text" id="aqC" class="fc"></div><div class="fg"><label class="fl">D *</label><input type="text" id="aqD" class="fc"></div></div><div class="g2"><div class="fg"><label class="fl">Answer *</label><select id="aqAn" class="fc"><option value="">Select</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="fg"><label class="fl">Explanation</label><input type="text" id="aqEx" class="fc"></div></div></div><div class="mb2"><button class="btn btn-o" onclick="cM('mdAQ')">Cancel</button><button class="btn btn-p" onclick="saveNQ()">Add</button></div></div></div>
+<div class="mbg" id="mdAQ">
+  <div class="mbox">
+    <div class="mt2"><h3>Add New Question</h3><button class="mx" onclick="cM('mdAQ')">✕</button></div>
+    <div class="mm">
+      <div class="fg"><label class="fl">Paragraph / Passage (optional)</label><textarea id="aqPara" class="fc" rows="3" placeholder="Shared passage or reading comprehension text..."></textarea></div>
+      <div class="fg"><label class="fl">Question Text *</label><textarea id="aqT" class="fc" rows="2" placeholder="Type the question here..."></textarea></div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Option A *</label><input type="text" id="aqA" class="fc"></div>
+        <div class="fg"><label class="fl">Option B *</label><input type="text" id="aqB" class="fc"></div>
+        <div class="fg"><label class="fl">Option C *</label><input type="text" id="aqC" class="fc"></div>
+        <div class="fg"><label class="fl">Option D *</label><input type="text" id="aqD" class="fc"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Correct Answer *</label><select id="aqAn" class="fc"><option value="">— Select —</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="fg"><label class="fl">Explanation</label><input type="text" id="aqEx" class="fc" placeholder="Brief explanation..."></div>
+      </div>
+    </div>
+    <div class="mb2"><button class="btn btn-o" onclick="cM('mdAQ')">Cancel</button><button class="btn btn-p" onclick="saveNQ()">Add Question</button></div>
+  </div>
+</div>
 
-<div class="mbg" id="mdEQ"><div class="mbox"><div class="mt2"><h3>Edit Question</h3><button class="mx" onclick="cM('mdEQ')">✕</button></div><div class="mm"><input type="hidden" id="eqI"><div class="fg"><label class="fl">Paragraph</label><textarea id="eqPara" class="fc" rows="3"></textarea></div><div class="fg"><label class="fl">Question *</label><textarea id="eqT" class="fc" rows="2"></textarea></div><div class="g2"><div class="fg"><label class="fl">A *</label><input type="text" id="eqA" class="fc"></div><div class="fg"><label class="fl">B *</label><input type="text" id="eqB" class="fc"></div><div class="fg"><label class="fl">C *</label><input type="text" id="eqC" class="fc"></div><div class="fg"><label class="fl">D *</label><input type="text" id="eqD" class="fc"></div></div><div class="g2"><div class="fg"><label class="fl">Answer *</label><select id="eqAn" class="fc"><option>A</option><option>B</option><option>C</option><option>D</option></select></div><div class="fg"><label class="fl">Explanation</label><input type="text" id="eqEx" class="fc"></div></div></div><div class="mb2"><button class="btn btn-o" onclick="cM('mdEQ')">Cancel</button><button class="btn btn-p" onclick="saveEQ()">Save</button></div></div></div>
+<div class="mbg" id="mdEQ">
+  <div class="mbox">
+    <div class="mt2"><h3>Edit Question</h3><button class="mx" onclick="cM('mdEQ')">✕</button></div>
+    <div class="mm">
+      <input type="hidden" id="eqI">
+      <div class="fg"><label class="fl">Paragraph / Passage</label><textarea id="eqPara" class="fc" rows="3"></textarea></div>
+      <div class="fg"><label class="fl">Question Text *</label><textarea id="eqT" class="fc" rows="2"></textarea></div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Option A *</label><input type="text" id="eqA" class="fc"></div>
+        <div class="fg"><label class="fl">Option B *</label><input type="text" id="eqB" class="fc"></div>
+        <div class="fg"><label class="fl">Option C *</label><input type="text" id="eqC" class="fc"></div>
+        <div class="fg"><label class="fl">Option D *</label><input type="text" id="eqD" class="fc"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label class="fl">Correct Answer *</label><select id="eqAn" class="fc"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="fg"><label class="fl">Explanation</label><input type="text" id="eqEx" class="fc"></div>
+      </div>
+    </div>
+    <div class="mb2"><button class="btn btn-o" onclick="cM('mdEQ')">Cancel</button><button class="btn btn-p" onclick="saveEQ()">Save Changes</button></div>
+  </div>
+</div>
 
-<div class="mbg" id="mdBQ"><div class="mbox"><div class="mt2"><h3>Bulk Import</h3><button class="mx" onclick="cM('mdBQ')">✕</button></div><div class="mm"><p style="font-size:13px;color:var(--g500);margin-bottom:12px;padding:10px;background:var(--g50);border-radius:var(--r);border:1.5px solid var(--border);">JSON: <code style="font-weight:800;color:var(--p);">question, a, b, c, d, answer, explanation, paragraph</code></p><div class="fg"><label class="fl">JSON *</label><textarea id="bJSON" class="fc" rows="10" style="font-family:monospace;font-size:14px;" placeholder='[{"question":"...","a":"...","b":"...","c":"...","d":"...","answer":"B","explanation":"...","paragraph":"..."}]'></textarea></div></div><div class="mb2"><button class="btn btn-o" onclick="cM('mdBQ')">Cancel</button><button class="btn btn-p" onclick="dBI()">Import</button></div></div></div>
+<div class="mbg" id="mdBQ">
+  <div class="mbox">
+    <div class="mt2"><h3>Bulk Import Questions</h3><button class="mx" onclick="cM('mdBQ')">✕</button></div>
+    <div class="mm">
+      <div style="font-size:13px;color:var(--g600);margin-bottom:12px;padding:10px 12px;background:var(--navy-ll);border-radius:var(--r);border:1px solid rgba(0,48,135,.1);">
+        <strong style="color:var(--navy);">JSON Format:</strong> <code style="font-weight:700;color:var(--saffron);">question, a, b, c, d, answer, explanation, paragraph</code>
+      </div>
+      <div class="fg"><label class="fl">Paste JSON Array *</label><textarea id="bJSON" class="fc" rows="10" style="font-family:monospace;font-size:13px;" placeholder='[{"question":"...","a":"...","b":"...","c":"...","d":"...","answer":"B","explanation":"...","paragraph":"..."}]'></textarea></div>
+    </div>
+    <div class="mb2"><button class="btn btn-o" onclick="cM('mdBQ')">Cancel</button><button class="btn btn-p" onclick="dBI()">Import Questions</button></div>
+  </div>
+</div>
 
-<div class="mbg" id="mdCf"><div class="mbox" style="max-width:420px;"><div class="mt2"><h3 id="cfT">Confirm</h3><button class="mx" onclick="cM('mdCf')">✕</button></div><div class="mm"><p id="cfM" style="font-size:15px;color:var(--g600);line-height:1.7;"></p></div><div class="mb2"><button class="btn btn-o" onclick="cM('mdCf')">Cancel</button><button class="btn btn-d" id="cfB">Confirm</button></div></div></div>
+<div class="mbg" id="mdCf">
+  <div class="mbox" style="max-width:420px;">
+    <div class="mt2"><h3 id="cfT">Confirm Action</h3><button class="mx" onclick="cM('mdCf')">✕</button></div>
+    <div class="mm"><p id="cfM" style="font-size:14px;color:var(--g600);line-height:1.7;"></p></div>
+    <div class="mb2"><button class="btn btn-o" onclick="cM('mdCf')">Cancel</button><button class="btn btn-d" id="cfB">Confirm</button></div>
+  </div>
+</div>
 
 <script>
 var API_URL='https://script.google.com/macros/s/AKfycbwhIBl5a7sg4ckYTmmQR6CIzPna3BIc0yu1WYTX9VJTRJXJOF7nswGQ705y-r_rL-bB/exec';
 var AE=[],CE='',CD=null,CQ=[],CI=0,SR={},TI=null,TL=0,LR=null,TAB_WARNS=0,MAX_WARNS=2,EXAM_ACTIVE=false,ALL_STUDENT_EXAMS=[];
+
 function sL(){document.getElementById('loader').classList.add('active');}
 function hL(){document.getElementById('loader').classList.remove('active');}
 function toast(m,t){t=t||'info';var c=document.getElementById('toastBox'),e=document.createElement('div');e.className='toast '+t;e.textContent=m;c.appendChild(e);setTimeout(function(){e.remove();},4500);}
@@ -363,74 +665,147 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function escP(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toggleSB(){document.getElementById('eRight').classList.toggle('collapsed');}
 function shuffleArray(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
-function api(p,cb){sL();var qp=[],tl=0;for(var k in p){var pt=encodeURIComponent(k)+'='+encodeURIComponent(p[k]);qp.push(pt);tl+=pt.length;}if(tl<1800){fetch(API_URL+'?'+qp.join('&')).then(function(r){return r.json();}).then(function(d){hL();cb(d);}).catch(function(e){hL();toast('Error: '+e.message,'error');});}else{fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p),redirect:'follow'}).then(function(r){return r.json();}).then(function(d){hL();cb(d);}).catch(function(e){hL();toast('Error: '+e.message,'error');});}}
+function api(p,cb){sL();var qp=[],tl=0;for(var k in p){var pt=encodeURIComponent(k)+'='+encodeURIComponent(p[k]);qp.push(pt);tl+=pt.length;}if(tl<1800){fetch(API_URL+'?'+qp.join('&')).then(function(r){return r.json();}).then(function(d){hL();cb(d);}).catch(function(e){hL();toast('Network error: '+e.message,'error');});}else{fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p),redirect:'follow'}).then(function(r){return r.json();}).then(function(d){hL();cb(d);}).catch(function(e){hL();toast('Network error: '+e.message,'error');});}}
 
-document.addEventListener('visibilitychange',function(){if(!EXAM_ACTIVE)return;if(document.hidden){TAB_WARNS++;if(TAB_WARNS>MAX_WARNS){toast('Auto-submitting exam...','error');setTimeout(doSub,500);return;}var el=document.getElementById('tabWarning');if(TAB_WARNS>=MAX_WARNS){document.getElementById('twTitle').textContent='⛔ FINAL WARNING';document.getElementById('twMsg').textContent='Switch tabs one more time and your exam will be automatically submitted!';document.getElementById('twCount').textContent='Warning '+TAB_WARNS+'/'+MAX_WARNS;document.getElementById('twCount').style.background='var(--red-l)';document.getElementById('twCount').style.color='var(--red-d)';}else{document.getElementById('twTitle').textContent='⚠️ Warning';document.getElementById('twMsg').textContent='Tab switching is not allowed during the exam. After '+MAX_WARNS+' warnings your exam auto-submits.';document.getElementById('twCount').textContent='Warning '+TAB_WARNS+'/'+MAX_WARNS;document.getElementById('twCount').style.background='var(--amber-l)';document.getElementById('twCount').style.color='var(--amber-d)';}el.classList.add('active');}});
+document.addEventListener('visibilitychange',function(){if(!EXAM_ACTIVE)return;if(document.hidden){TAB_WARNS++;if(TAB_WARNS>MAX_WARNS){toast('Exam auto-submitted due to tab switching.','error');setTimeout(doSub,500);return;}var el=document.getElementById('tabWarning');if(TAB_WARNS>=MAX_WARNS){document.getElementById('twTitle').textContent='⛔ FINAL WARNING';document.getElementById('twMsg').textContent='One more tab switch and your examination will be automatically submitted. This action cannot be undone.';document.getElementById('twCount').textContent='Warning '+TAB_WARNS+' of '+MAX_WARNS;document.getElementById('twCount').style.background='var(--red-l)';document.getElementById('twCount').style.color='var(--red-d)';}else{document.getElementById('twTitle').textContent='⚠️ Warning — Tab Switching Detected';document.getElementById('twMsg').textContent='Tab switching is strictly prohibited during the examination. After '+MAX_WARNS+' warnings your examination will be automatically submitted.';document.getElementById('twCount').textContent='Warning '+TAB_WARNS+' of '+MAX_WARNS;document.getElementById('twCount').style.background='var(--amber-l)';document.getElementById('twCount').style.color='var(--amber)';}el.classList.add('active');}});
 function dismissWarn(){document.getElementById('tabWarning').classList.remove('active');}
 
-function doLogin(){var u=document.getElementById('inpU').value.trim(),p=document.getElementById('inpP').value.trim();if(!u||!p){toast('Enter credentials','error');return;}api({action:'adminLogin',username:u,password:p},function(r){if(r.success){toast('Welcome!','success');goPage('pgAdmin');}else toast(r.message,'error');});}
+function doLogin(){var u=document.getElementById('inpU').value.trim(),p=document.getElementById('inpP').value.trim();if(!u||!p){toast('Please enter username and password','error');return;}api({action:'adminLogin',username:u,password:p},function(r){if(r.success){toast('Welcome, Administrator!','success');goPage('pgAdmin');}else toast(r.message,'error');});}
 function loadExams(){api({action:'getAllExams'},function(r){if(r.success){AE=r.exams;rET(r.exams);fSS(r.exams);}else toast(r.message,'error');});}
-function rET(ex){var t=document.getElementById('tblE');if(!ex.length){t.innerHTML='<tr><td colspan="7"><div class="empty"><div class="ei">📋</div><div class="et">No exams</div></div></td></tr>';return;}var h='';ex.forEach(function(e){h+='<tr><td><strong>'+escP(e.title)+'</strong></td><td>'+e.duration+'m</td><td style="color:var(--green-d);font-weight:800;">+'+e.marksPerQuestion+'</td><td style="color:var(--red-d);font-weight:800;">−'+e.negativeMarks+'</td><td><span class="badge badge-'+e.status+'">'+e.status+'</span></td><td><button class="btn btn-o btn-sm" onclick="mQ(\''+e.examID+'\',\''+escP(e.title).replace(/'/g,"\\'")+'\')">Manage</button></td><td><div class="ar"><button class="btn btn-o btn-sm" onclick="oEE(\''+e.examID+'\')">Edit</button>';if(e.status==='open')h+='<button class="btn btn-w btn-sm" onclick="sS(\''+e.examID+'\',\'closed\')">Close</button><button class="btn btn-o btn-sm" onclick="sS(\''+e.examID+'\',\'hidden\')">Hide</button>';else if(e.status==='closed')h+='<button class="btn btn-s btn-sm" onclick="sS(\''+e.examID+'\',\'open\')">Open</button><button class="btn btn-o btn-sm" onclick="sS(\''+e.examID+'\',\'hidden\')">Hide</button>';else h+='<button class="btn btn-s btn-sm" onclick="sS(\''+e.examID+'\',\'open\')">Open</button><button class="btn btn-w btn-sm" onclick="sS(\''+e.examID+'\',\'closed\')">Close</button>';h+='<button class="btn btn-d btn-sm" onclick="dE(\''+e.examID+'\',\''+escP(e.title).replace(/'/g,"\\'")+'\')">Del</button></div></td></tr>';});t.innerHTML=h;}
-function createExam(){var t=document.getElementById('cT').value.trim(),d=document.getElementById('cD').value.trim(),pq=document.getElementById('cPQ').value.trim();if(!t||!d||!pq){toast('Fill required fields','error');return;}api({action:'createExam',data:JSON.stringify({title:t,description:document.getElementById('cDe').value.trim(),duration:d,totalMarks:document.getElementById('cTM').value||0,marksPerQuestion:pq,negativeMarks:document.getElementById('cN').value||0})},function(r){if(r.success){toast(r.message,'success');['cT','cD','cDe','cTM','cPQ'].forEach(function(x){document.getElementById(x).value='';});document.getElementById('cN').value='0.25';aTab('tcE',document.querySelector('.atab'));loadExams();}else toast(r.message,'error');});}
+function rET(ex){var t=document.getElementById('tblE');if(!ex.length){t.innerHTML='<tr><td colspan="6"><div class="empty"><div class="ei">📋</div><div class="et">No examinations found</div></div></td></tr>';return;}var h='';ex.forEach(function(e){h+='<tr><td><strong style="color:var(--navy);">'+escP(e.title)+'</strong></td><td>'+e.duration+' min</td><td style="color:var(--green-d);font-weight:700;">+'+e.marksPerQuestion+'</td><td style="color:var(--red-d);font-weight:700;">−'+e.negativeMarks+'</td><td><span class="badge badge-'+e.status+'">'+e.status+'</span></td><td><div class="ar"><button class="btn btn-o btn-sm" onclick="mQ(\''+e.examID+'\',\''+escP(e.title).replace(/'/g,"\\'")+'\')">Questions</button><button class="btn btn-o btn-sm" onclick="oEE(\''+e.examID+'\')">Edit</button>';if(e.status==='open')h+='<button class="btn btn-w btn-sm" onclick="sS(\''+e.examID+'\',\'closed\')">Close</button><button class="btn btn-o btn-sm" onclick="sS(\''+e.examID+'\',\'hidden\')">Hide</button>';else if(e.status==='closed')h+='<button class="btn btn-s btn-sm" onclick="sS(\''+e.examID+'\',\'open\')">Open</button><button class="btn btn-o btn-sm" onclick="sS(\''+e.examID+'\',\'hidden\')">Hide</button>';else h+='<button class="btn btn-s btn-sm" onclick="sS(\''+e.examID+'\',\'open\')">Open</button><button class="btn btn-w btn-sm" onclick="sS(\''+e.examID+'\',\'closed\')">Close</button>';h+='<button class="btn btn-d btn-sm" onclick="dE(\''+e.examID+'\',\''+escP(e.title).replace(/'/g,"\\'")+'\')">Delete</button></div></td></tr>';});t.innerHTML=h;}
+function createExam(){var t=document.getElementById('cT').value.trim(),d=document.getElementById('cD').value.trim(),pq=document.getElementById('cPQ').value.trim();if(!t||!d||!pq){toast('Please fill all required fields','error');return;}api({action:'createExam',data:JSON.stringify({title:t,description:document.getElementById('cDe').value.trim(),duration:d,totalMarks:document.getElementById('cTM').value||0,marksPerQuestion:pq,negativeMarks:document.getElementById('cN').value||0})},function(r){if(r.success){toast(r.message,'success');['cT','cD','cDe','cTM','cPQ'].forEach(function(x){document.getElementById(x).value='';});document.getElementById('cN').value='0.25';aTab('tcE',document.querySelector('.atab'));loadExams();}else toast(r.message,'error');});}
 function oEE(id){var e=AE.find(function(x){return x.examID===id;});if(!e)return;document.getElementById('eID').value=e.examID;document.getElementById('eT').value=e.title;document.getElementById('eD').value=e.duration;document.getElementById('eDe').value=e.description;document.getElementById('eTM').value=e.totalMarks;document.getElementById('ePQ').value=e.marksPerQuestion;document.getElementById('eN').value=e.negativeMarks;goPage('pgEE');}
-function saveEE(){var o={examID:document.getElementById('eID').value,title:document.getElementById('eT').value.trim(),description:document.getElementById('eDe').value.trim(),duration:document.getElementById('eD').value,totalMarks:document.getElementById('eTM').value||0,marksPerQuestion:document.getElementById('ePQ').value,negativeMarks:document.getElementById('eN').value||0};if(!o.title||!o.duration){toast('Fill required','error');return;}api({action:'updateExam',data:JSON.stringify(o)},function(r){if(r.success){toast(r.message,'success');goPage('pgAdmin');loadExams();}else toast(r.message,'error');});}
+function saveEE(){var o={examID:document.getElementById('eID').value,title:document.getElementById('eT').value.trim(),description:document.getElementById('eDe').value.trim(),duration:document.getElementById('eD').value,totalMarks:document.getElementById('eTM').value||0,marksPerQuestion:document.getElementById('ePQ').value,negativeMarks:document.getElementById('eN').value||0};if(!o.title||!o.duration){toast('Please fill required fields','error');return;}api({action:'updateExam',data:JSON.stringify(o)},function(r){if(r.success){toast(r.message,'success');goPage('pgAdmin');loadExams();}else toast(r.message,'error');});}
 function sS(id,st){api({action:'updateExamStatus',examID:id,status:st},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadExams();});}
-function dE(id,t){cfDo('Delete','Delete "'+t+'"?',function(){api({action:'deleteExam',examID:id},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadExams();});});}
+function dE(id,t){cfDo('Delete Examination','Are you sure you want to delete "'+t+'"? This action cannot be undone.',function(){api({action:'deleteExam',examID:id},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadExams();});});}
 function mQ(eid,t){CE=eid;document.getElementById('mqT').textContent=t;goPage('pgQ');loadQ(eid);}
 function loadQ(eid){api({action:'getQuestionsByExam',examID:eid},function(r){if(r.success)rQL(r.questions);else toast(r.message,'error');});}
-function rQL(qs){var c=document.getElementById('qList');if(!qs.length){c.innerHTML='<div class="empty"><div class="ei">❓</div><div class="et">No questions</div></div>';return;}var h='';qs.forEach(function(q,i){h+='<div class="qc"><div class="qc-head"><span class="ql">Q'+(i+1)+'</span><div class="ar"><button class="btn btn-o btn-sm" onclick=\'edQ('+JSON.stringify(q).replace(/'/g,"&#39;")+')\'>Edit</button><button class="btn btn-d btn-sm" onclick="dlQ(\''+q.questionID+'\')">Del</button></div></div>';if(q.paragraph)h+='<div class="para-box"><div class="para-label">📖 Passage</div><div class="para-text">'+esc(q.paragraph)+'</div></div>';h+='<div class="qt">'+esc(q.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var v=q['option'+o],ic=q.correctAnswer.toUpperCase()===o;h+='<div class="oi'+(ic?' co':'')+'" style="cursor:default;"><span class="ol">'+o+'</span><span class="ot">'+escP(v)+(ic?' ✓':'')+'</span></div>';});h+='</div>';if(q.explanation)h+='<div class="expbox"><div class="exp-head"><span class="exp-icon">💡</span><span class="exp-label">Explanation</span></div><div class="exp-text">'+esc(q.explanation)+'</div></div>';h+='</div>';});c.innerHTML=h;}
+function rQL(qs){var c=document.getElementById('qList');if(!qs.length){c.innerHTML='<div class="empty"><div class="ei">❓</div><div class="et">No questions added yet</div></div>';return;}var h='';qs.forEach(function(q,i){h+='<div class="qc"><div class="qc-head"><span class="ql">Question '+(i+1)+'</span><div class="ar"><button class="btn btn-o btn-sm" onclick=\'edQ('+JSON.stringify(q).replace(/'/g,"&#39;")+')\'>Edit</button><button class="btn btn-d btn-sm" onclick="dlQ(\''+q.questionID+'\')">Delete</button></div></div>';if(q.paragraph)h+='<div class="para-box"><div class="para-label">📖 Passage / Paragraph</div><div class="para-text">'+esc(q.paragraph)+'</div></div>';h+='<div class="qt">'+esc(q.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var v=q['option'+o],ic=q.correctAnswer.toUpperCase()===o;h+='<div class="oi'+(ic?' co':'')+'" style="cursor:default;"><span class="ol">'+o+'</span><span class="ot">'+escP(v)+(ic?' <b style="color:var(--green-d);">(✓ Correct)</b>':'')+'</span></div>';});h+='</div>';if(q.explanation)h+='<div class="expbox"><div class="exp-head"><span class="exp-icon">💡</span><span class="exp-label">Explanation</span></div><div class="exp-text">'+esc(q.explanation)+'</div></div>';h+='</div>';});c.innerHTML=h;}
 function openAddQ(){['aqPara','aqT','aqA','aqB','aqC','aqD','aqEx'].forEach(function(x){document.getElementById(x).value='';});document.getElementById('aqAn').value='';oM('mdAQ');}
-function saveNQ(){var d={examID:CE,questionText:document.getElementById('aqT').value.trim(),optionA:document.getElementById('aqA').value.trim(),optionB:document.getElementById('aqB').value.trim(),optionC:document.getElementById('aqC').value.trim(),optionD:document.getElementById('aqD').value.trim(),correctAnswer:document.getElementById('aqAn').value,explanation:document.getElementById('aqEx').value.trim(),paragraph:document.getElementById('aqPara').value.trim()};if(!d.questionText||!d.optionA||!d.optionB||!d.optionC||!d.optionD||!d.correctAnswer){toast('Fill required','error');return;}api({action:'addQuestion',data:JSON.stringify(d)},function(r){if(r.success){toast(r.message,'success');cM('mdAQ');loadQ(CE);}else toast(r.message,'error');});}
+function saveNQ(){var d={examID:CE,questionText:document.getElementById('aqT').value.trim(),optionA:document.getElementById('aqA').value.trim(),optionB:document.getElementById('aqB').value.trim(),optionC:document.getElementById('aqC').value.trim(),optionD:document.getElementById('aqD').value.trim(),correctAnswer:document.getElementById('aqAn').value,explanation:document.getElementById('aqEx').value.trim(),paragraph:document.getElementById('aqPara').value.trim()};if(!d.questionText||!d.optionA||!d.optionB||!d.optionC||!d.optionD||!d.correctAnswer){toast('Please fill all required fields','error');return;}api({action:'addQuestion',data:JSON.stringify(d)},function(r){if(r.success){toast(r.message,'success');cM('mdAQ');loadQ(CE);}else toast(r.message,'error');});}
 function edQ(q){document.getElementById('eqI').value=q.questionID;document.getElementById('eqPara').value=q.paragraph||'';document.getElementById('eqT').value=q.questionText;document.getElementById('eqA').value=q.optionA;document.getElementById('eqB').value=q.optionB;document.getElementById('eqC').value=q.optionC;document.getElementById('eqD').value=q.optionD;document.getElementById('eqAn').value=q.correctAnswer.toUpperCase();document.getElementById('eqEx').value=q.explanation||'';oM('mdEQ');}
 function saveEQ(){var d={questionID:document.getElementById('eqI').value,questionText:document.getElementById('eqT').value.trim(),optionA:document.getElementById('eqA').value.trim(),optionB:document.getElementById('eqB').value.trim(),optionC:document.getElementById('eqC').value.trim(),optionD:document.getElementById('eqD').value.trim(),correctAnswer:document.getElementById('eqAn').value,explanation:document.getElementById('eqEx').value.trim(),paragraph:document.getElementById('eqPara').value.trim()};api({action:'updateQuestion',data:JSON.stringify(d)},function(r){if(r.success){toast(r.message,'success');cM('mdEQ');loadQ(CE);}else toast(r.message,'error');});}
-function dlQ(qid){cfDo('Delete','Delete question?',function(){api({action:'deleteQuestion',questionID:qid},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadQ(CE);});});}
+function dlQ(qid){cfDo('Delete Question','Are you sure you want to delete this question?',function(){api({action:'deleteQuestion',questionID:qid},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadQ(CE);});});}
 function openBulkQ(){document.getElementById('bJSON').value='';oM('mdBQ');}
-function dBI(){var j=document.getElementById('bJSON').value.trim();if(!j){toast('Paste JSON','error');return;}try{JSON.parse(j);}catch(e){toast('Invalid JSON','error');return;}api({action:'addBulkQuestions',examID:CE,questionsJSON:j},function(r){if(r.success){toast(r.message,'success');cM('mdBQ');loadQ(CE);}else toast(r.message,'error');});}
-function fSS(ex){var s=document.getElementById('selSE');s.innerHTML='<option value="">Select Exam</option>';ex.forEach(function(e){s.innerHTML+='<option value="'+e.examID+'">'+escP(e.title)+'</option>';});}
-function loadSubs(){var eid=document.getElementById('selSE').value;if(!eid){document.getElementById('tblS').innerHTML='<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--g300);">Select exam</td></tr>';return;}api({action:'getSubmissionsByExam',examID:eid},function(r){if(r.success)rST(r.submissions);else toast(r.message,'error');});}
-function rST(subs){var t=document.getElementById('tblS');if(!subs.length){t.innerHTML='<tr><td colspan="8"><div class="empty"><div class="ei">📭</div><div class="et">No submissions</div></div></td></tr>';return;}var h='';subs.forEach(function(s,i){h+='<tr><td>'+(i+1)+'</td><td><strong>'+escP(s.studentName)+'</strong></td><td><strong style="color:var(--p);">'+s.score+'</strong></td><td><span class="badge badge-correct">'+s.totalCorrect+'</span></td><td><span class="badge badge-wrong">'+s.totalWrong+'</span></td><td><span class="badge badge-skip">'+s.totalUnanswered+'</span></td><td><small>'+new Date(s.submittedAt).toLocaleString()+'</small></td><td><div class="ar"><button class="btn btn-o btn-sm" onclick="vS(\''+s.submissionID+'\')">View</button><button class="btn btn-p btn-sm" onclick="xPDF(\''+s.submissionID+'\')">PDF</button><button class="btn btn-d btn-sm" onclick="dSub(\''+s.submissionID+'\')">Del</button></div></td></tr>';});t.innerHTML=h;}
+function dBI(){var j=document.getElementById('bJSON').value.trim();if(!j){toast('Please paste JSON data','error');return;}try{JSON.parse(j);}catch(e){toast('Invalid JSON format','error');return;}api({action:'addBulkQuestions',examID:CE,questionsJSON:j},function(r){if(r.success){toast(r.message,'success');cM('mdBQ');loadQ(CE);}else toast(r.message,'error');});}
+function fSS(ex){var s=document.getElementById('selSE');s.innerHTML='<option value="">— Select Examination —</option>';ex.forEach(function(e){s.innerHTML+='<option value="'+e.examID+'">'+escP(e.title)+'</option>';});}
+function loadSubs(){var eid=document.getElementById('selSE').value;if(!eid){document.getElementById('tblS').innerHTML='<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--g300);">Select an examination</td></tr>';return;}api({action:'getSubmissionsByExam',examID:eid},function(r){if(r.success)rST(r.submissions);else toast(r.message,'error');});}
+function rST(subs){var t=document.getElementById('tblS');if(!subs.length){t.innerHTML='<tr><td colspan="8"><div class="empty"><div class="ei">📭</div><div class="et">No submissions yet</div></div></td></tr>';return;}var h='';subs.forEach(function(s,i){h+='<tr><td>'+(i+1)+'</td><td><strong>'+escP(s.studentName)+'</strong></td><td><strong style="color:var(--navy);">'+s.score+'</strong></td><td><span class="badge badge-correct">'+s.totalCorrect+'</span></td><td><span class="badge badge-wrong">'+s.totalWrong+'</span></td><td><span class="badge badge-skip">'+s.totalUnanswered+'</span></td><td><small>'+new Date(s.submittedAt).toLocaleString()+'</small></td><td><div class="ar"><button class="btn btn-o btn-sm" onclick="vS(\''+s.submissionID+'\')">View</button><button class="btn btn-p btn-sm" onclick="xPDF(\''+s.submissionID+'\')">PDF</button><button class="btn btn-d btn-sm" onclick="dSub(\''+s.submissionID+'\')">Del</button></div></td></tr>';});t.innerHTML=h;}
 function vS(sid){api({action:'getSubmissionDetail',submissionID:sid},function(r){if(r.success){rSD(r);goPage('pgSD');}else toast(r.message,'error');});}
-function rSD(d){var h=bRH(d);h+='<div style="margin-bottom:18px;"><button class="btn btn-p" onclick="xPDF(\''+d.submissionID+'\')">📄 PDF</button></div>';h+=bDH(d.detailedResponses);document.getElementById('sdW').innerHTML=h;}
-function dSub(sid){cfDo('Delete','Delete?',function(){api({action:'deleteSubmission',submissionID:sid},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadSubs();});});}
+function rSD(d){var h=bRH(d);h+='<div style="margin-bottom:16px;"><button class="btn btn-p" onclick="xPDF(\''+d.submissionID+'\')">📄 Download PDF</button></div>';h+=bDH(d.detailedResponses);document.getElementById('sdW').innerHTML=h;}
+function dSub(sid){cfDo('Delete Submission','Delete this submission? This cannot be undone.',function(){api({action:'deleteSubmission',submissionID:sid},function(r){toast(r.message,r.success?'success':'error');if(r.success)loadSubs();});});}
+</script>
 
-// STUDENT
+<script>
+// STUDENT FUNCTIONS
 function loadSE(){api({action:'getOpenExams'},function(r){if(r.success){ALL_STUDENT_EXAMS=r.exams;document.getElementById('examSearch').value='';document.getElementById('searchClear').classList.remove('show');rSC(r.exams);}else toast(r.message,'error');});}
 function rSC(exams){
   var c=document.getElementById('sExams');var ct=document.getElementById('examCount');
-  if(!exams.length&&!document.getElementById('examSearch').value.trim()){ct.textContent='No exams available';c.innerHTML='<div class="empty"><div class="ei">📭</div><div class="et">No exams available right now. Check back later.</div></div>';return;}
-  if(!exams.length){ct.textContent='No results found';c.innerHTML='<div class="no-results">🔍 No exams match your search.</div>';return;}
-  ct.innerHTML='Showing <strong>'+exams.length+'</strong> exam'+(exams.length!==1?'s':'');
+  if(!exams.length&&!document.getElementById('examSearch').value.trim()){ct.textContent='No examinations available at this time';c.innerHTML='<div class="empty"><div class="ei">📭</div><div class="et">No examinations available right now. Please check back later.</div></div>';return;}
+  if(!exams.length){ct.textContent='No results found';c.innerHTML='<div class="no-results">🔍 No examinations match your search.</div>';return;}
+  ct.innerHTML='Showing <strong>'+exams.length+'</strong> examination'+(exams.length!==1?'s':'');
   var h='';exams.forEach(function(e){
     h+='<div class="ecard" onclick="selE(\''+e.examID+'\')">';
     h+='<div class="ecard-left"><h3>'+escP(e.title)+'</h3><p>'+escP(e.description||'Online Examination')+'</p></div>';
     h+='<div class="ecard-right"><div class="ecard-meta">';
     h+='<div class="em"><span class="eml">Duration</span><span class="emv">'+e.duration+' min</span></div>';
-    h+='<div class="em"><span class="eml">Per Correct</span><span class="emv" style="color:var(--green-d);">+'+e.marksPerQuestion+'</span></div>';
-    h+='<div class="em"><span class="eml">Negative</span><span class="emv" style="color:var(--red-d);">−'+e.negativeMarks+'</span></div>';
-    h+='</div><div class="ecard-action"><button class="btn btn-p btn-lg">Start Exam →</button></div></div></div>';
+    h+='<div class="em"><span class="eml">Correct</span><span class="emv" style="color:var(--green-d);">+'+e.marksPerQuestion+'</span></div>';
+    h+='<div class="em"><span class="eml">Wrong</span><span class="emv" style="color:var(--red-d);">−'+e.negativeMarks+'</span></div>';
+    h+='</div><div class="ecard-action"><button class="btn btn-p btn-lg">Appear for Exam →</button></div></div></div>';
   });c.innerHTML=h;
 }
 function filterExams(){var q=document.getElementById('examSearch').value.trim().toLowerCase();var cb=document.getElementById('searchClear');if(q){cb.classList.add('show');var f=ALL_STUDENT_EXAMS.filter(function(e){return e.title.toLowerCase().indexOf(q)!==-1||(e.description&&e.description.toLowerCase().indexOf(q)!==-1);});rSC(f);}else{cb.classList.remove('show');rSC(ALL_STUDENT_EXAMS);}}
 function clearSearch(){document.getElementById('examSearch').value='';document.getElementById('searchClear').classList.remove('show');rSC(ALL_STUDENT_EXAMS);}
 
-function selE(eid){CE=eid;api({action:'getExamForStudent',examID:eid},function(r){if(r.success){CD=r.exam;document.getElementById('snT').textContent=r.exam.title;document.getElementById('snI').textContent=r.exam.duration+'min · +'+r.exam.marksPerQuestion+' correct · −'+r.exam.negativeMarks+' wrong';document.getElementById('inpSN').value='';goPage('pgSN');}else toast(r.message,'error');});}
-function beginExam(){var n=document.getElementById('inpSN').value.trim();if(!n){toast('Enter name','error');return;}api({action:'getExamForStudent',examID:CE},function(r){if(r.success){CD=r.exam;CQ=shuffleArray(r.questions);CI=0;SR={};TAB_WARNS=0;EXAM_ACTIVE=true;document.getElementById('etT').textContent=r.exam.title;document.getElementById('etN').textContent=n;document.getElementById('etN2').textContent=n;document.getElementById('etA').textContent=CQ.length;document.getElementById('totC').textContent=CQ.length;TL=parseInt(r.exam.duration)*60;sTimer();sQ();dNav();goPage('pgExam');}else toast(r.message,'error');});}
-function sTimer(){if(TI)clearInterval(TI);tT();TI=setInterval(function(){TL--;if(TL<=0){clearInterval(TI);toast('Time up!','warning');doSub();}tT();if(TL<=60)document.getElementById('tD').classList.add('crit');},1e3);}
+function selE(eid){CE=eid;api({action:'getExamForStudent',examID:eid},function(r){if(r.success){CD=r.exam;document.getElementById('snT').textContent=r.exam.title;document.getElementById('snI').textContent='Duration: '+r.exam.duration+' minutes  |  Marks per correct answer: +'+r.exam.marksPerQuestion+'  |  Negative marks per wrong answer: −'+r.exam.negativeMarks;document.getElementById('inpSN').value='';goPage('pgSN');}else toast(r.message,'error');});}
+function beginExam(){var n=document.getElementById('inpSN').value.trim();if(!n){toast('Please enter your full name','error');return;}api({action:'getExamForStudent',examID:CE},function(r){if(r.success){CD=r.exam;CQ=shuffleArray(r.questions);CI=0;SR={};TAB_WARNS=0;EXAM_ACTIVE=true;document.getElementById('etT').textContent=r.exam.title;document.getElementById('etN').textContent=n;document.getElementById('etN2').textContent=n;document.getElementById('etA').textContent=CQ.length;document.getElementById('totC').textContent=CQ.length;TL=parseInt(r.exam.duration)*60;sTimer();sQ();dNav();goPage('pgExam');}else toast(r.message,'error');});}
+function sTimer(){if(TI)clearInterval(TI);tT();TI=setInterval(function(){TL--;if(TL<=0){clearInterval(TI);toast('Time is up! Exam is being submitted.','warning');doSub();}tT();if(TL<=60)document.getElementById('tD').classList.add('crit');},1e3);}
 function tT(){var h=Math.floor(TL/3600),m=Math.floor((TL%3600)/60),s=TL%60;document.getElementById('tD').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
-function sQ(){var q=CQ[CI];document.getElementById('etC').textContent=CI+1;var h='<div class="qc"><div class="qc-head"><span class="ql">Question '+(CI+1)+'/'+CQ.length+'</span></div>';if(q.paragraph&&q.paragraph.trim())h+='<div class="para-box"><div class="para-label">📖 Read the passage:</div><div class="para-text">'+esc(q.paragraph)+'</div></div>';h+='<div class="qt">'+esc(q.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var sl=SR[q.questionID]===o?' sel':'';h+='<div class="oi'+sl+'" onclick="pO(\''+q.questionID+'\',\''+o+'\',this)"><input type="radio" name="qr" value="'+o+'"'+(sl?' checked':'')+'><span class="orad"></span><span class="ol">'+o+'</span><span class="ot">'+escP(q['option'+o])+'</span></div>';});h+='</div></div>';document.getElementById('eqW').innerHTML=h;document.getElementById('bP').disabled=CI===0;document.getElementById('bN').textContent=CI===CQ.length-1?'Finish':'Next →';document.getElementById('eLeft').scrollTop=0;}
+function sQ(){var q=CQ[CI];document.getElementById('etC').textContent=CI+1;var h='<div class="qc"><div class="qc-head"><span class="ql">Question '+(CI+1)+' / '+CQ.length+'</span></div>';if(q.paragraph&&q.paragraph.trim())h+='<div class="para-box"><div class="para-label">📖 Read the following passage carefully:</div><div class="para-text">'+esc(q.paragraph)+'</div></div>';h+='<div class="qt">'+esc(q.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var sl=SR[q.questionID]===o?' sel':'';h+='<div class="oi'+sl+'" onclick="pO(\''+q.questionID+'\',\''+o+'\',this)"><input type="radio" name="qr" value="'+o+'"'+(sl?' checked':'')+'><span class="orad"></span><span class="ol">'+o+'</span><span class="ot">'+escP(q['option'+o])+'</span></div>';});h+='</div></div>';document.getElementById('eqW').innerHTML=h;document.getElementById('bP').disabled=CI===0;document.getElementById('bN').textContent=CI===CQ.length-1?'Finish →':'Next →';document.getElementById('eLeft').scrollTop=0;}
 function dNav(){var c=document.getElementById('qN'),h='',ac=Object.keys(SR).length;document.getElementById('ansC').textContent=ac;document.getElementById('unansC').textContent=CQ.length-ac;CQ.forEach(function(q,i){var cl='qd';if(SR[q.questionID])cl+=' ans';if(i===CI)cl+=' cur';h+='<button class="'+cl+'" onclick="jQ('+i+')">'+(i+1)+'</button>';});c.innerHTML=h;}
 function pO(qid,opt,el){SR[qid]=opt;el.parentElement.querySelectorAll('.oi').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');dNav();}
 function clA(){delete SR[CQ[CI].questionID];sQ();dNav();}
 function nQ(d){var n=CI+d;if(n<0)return;if(n>=CQ.length){cSub();return;}CI=n;sQ();dNav();}
 function jQ(i){CI=i;sQ();dNav();}
-function cSub(){var a=Object.keys(SR).length,t=CQ.length;cfDo('Submit Exam','Answered '+a+'/'+t+'.'+(t-a>0?' '+(t-a)+' unanswered.':'')+' Submit?',doSub);}
-function doSub(){if(TI)clearInterval(TI);EXAM_ACTIVE=false;TAB_WARNS=0;document.getElementById('tD').classList.remove('crit');document.getElementById('tabWarning').classList.remove('active');var n=document.getElementById('etN').textContent;var qO=CQ.map(function(q){return q.questionID;});api({action:'submitExam',data:JSON.stringify({examID:CE,studentName:n,responses:SR,questionOrder:qO})},function(r){if(r.success){toast('Exam submitted!','success');LR=r;rRes(r);goPage('pgR');}else toast(r.message,'error');});}
-function bRH(d){var tQ=d.totalQuestions||(d.totalCorrect+d.totalWrong+d.totalUnanswered);return '<div class="rh"><div class="re">'+escP(d.examTitle||'')+'</div><div class="rl2">Score</div><div class="rv">'+d.score+'</div><div class="rn">'+escP(d.studentName||'')+'</div><div class="rsr"><div class="rs c"><div class="rsv">'+d.totalCorrect+'</div><div class="rsl">Correct</div></div><div class="rs w"><div class="rsv">'+d.totalWrong+'</div><div class="rsl">Wrong</div></div><div class="rs"><div class="rsv">'+d.totalUnanswered+'</div><div class="rsl">Skip</div></div><div class="rs"><div class="rsv">'+tQ+'</div><div class="rsl">Total</div></div></div></div>';}
-function rRes(d){var h=bRH(d);h+='<div class="fb" style="margin-bottom:18px;"><h3 style="font-weight:900;font-size:18px;">Detailed Review</h3><button class="btn btn-p" onclick="pPDF()">📄 PDF</button></div>';h+=bDH(d.detailedResponses);document.getElementById('rW').innerHTML=h;}
-function bDH(res){var h='';res.forEach(function(r,i){var sc=r.isUnanswered?'badge-skip':(r.isCorrect?'badge-correct':'badge-wrong');var st=r.isUnanswered?'SKIP':(r.isCorrect?'CORRECT':'WRONG');h+='<div class="qc"><div class="qc-head"><span class="ql">Q'+(i+1)+'</span><span class="badge '+sc+'">'+st+'</span></div>';if(r.paragraph&&r.paragraph.trim())h+='<div class="para-box"><div class="para-label">📖 Passage</div><div class="para-text">'+esc(r.paragraph)+'</div></div>';h+='<div class="qt">'+esc(r.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var v=r['option'+o],iC=r.correctAnswer.toUpperCase()===o,iS=r.studentAnswer&&r.studentAnswer.toUpperCase()===o;var cl='oi';if(iC)cl+=' co';else if(iS&&!r.isCorrect)cl+=' wo';h+='<div class="'+cl+'" style="cursor:default;"><span class="ol">'+o+'</span><span class="ot">'+escP(v);if(iC)h+=' <b style="color:var(--green-d);">✓ Correct</b>';if(iS&&!r.isCorrect)h+=' <b style="color:var(--red-d);">✕ Yours</b>';if(iS&&r.isCorrect)h+=' <b style="color:var(--green-d);">(Yours)</b>';h+='</span></div>';});h+='</div>';if(r.explanation)h+='<div class="expbox"><div class="exp-head"><span class="exp-icon">💡</span><span class="exp-label">Explanation</span></div><div class="exp-text">'+esc(r.explanation)+'</div></div>';h+='</div>';});return h;}
-function pPDF(){if(!LR){toast('No data','error');return;}gPDF(LR);}
+function cSub(){var a=Object.keys(SR).length,t=CQ.length;cfDo('Submit Examination','You have answered '+a+' out of '+t+' questions.'+(t-a>0?' '+( t-a)+' question(s) are unanswered.':'')+' Are you sure you want to submit?',doSub);}
+function doSub(){if(TI)clearInterval(TI);EXAM_ACTIVE=false;TAB_WARNS=0;document.getElementById('tD').classList.remove('crit');document.getElementById('tabWarning').classList.remove('active');var n=document.getElementById('etN').textContent;var qO=CQ.map(function(q){return q.questionID;});api({action:'submitExam',data:JSON.stringify({examID:CE,studentName:n,responses:SR,questionOrder:qO})},function(r){if(r.success){toast('Examination submitted successfully!','success');LR=r;rRes(r);goPage('pgR');}else toast(r.message,'error');});}
+function bRH(d){var tQ=d.totalQuestions||(d.totalCorrect+d.totalWrong+d.totalUnanswered);var pct=tQ>0?Math.round((d.totalCorrect/tQ)*100):0;return '<div class="rh"><div class="re">'+escP(d.examTitle||'')+'</div><div class="rl2">Final Score</div><div class="rv">'+d.score+'</div><div class="rn">Candidate: <strong>'+escP(d.studentName||'')+'</strong> &nbsp;|&nbsp; Accuracy: <strong>'+pct+'%</strong></div><div class="rsr"><div class="rs c"><div class="rsv">'+d.totalCorrect+'</div><div class="rsl">Correct</div></div><div class="rs w"><div class="rsv">'+d.totalWrong+'</div><div class="rsl">Wrong</div></div><div class="rs"><div class="rsv">'+d.totalUnanswered+'</div><div class="rsl">Skipped</div></div><div class="rs"><div class="rsv">'+tQ+'</div><div class="rsl">Total</div></div></div></div>';}
+function rRes(d){var h=bRH(d);h+='<div class="fb" style="margin-bottom:16px;"><h3 style="font-weight:700;font-size:17px;color:var(--navy);font-family:var(--font-serif);">Detailed Answer Review</h3><button class="btn btn-p" onclick="pPDF()">📄 Download PDF Report</button></div>';h+=bDH(d.detailedResponses);document.getElementById('rW').innerHTML=h;}
+function bDH(res){var h='';res.forEach(function(r,i){var sc=r.isUnanswered?'badge-skip':(r.isCorrect?'badge-correct':'badge-wrong');var st=r.isUnanswered?'SKIPPED':(r.isCorrect?'CORRECT':'INCORRECT');h+='<div class="qc"><div class="qc-head"><span class="ql">Question '+(i+1)+'</span><span class="badge '+sc+'">'+st+'</span></div>';if(r.paragraph&&r.paragraph.trim())h+='<div class="para-box"><div class="para-label">📖 Passage</div><div class="para-text">'+esc(r.paragraph)+'</div></div>';h+='<div class="qt">'+esc(r.questionText)+'</div><div class="opts">';['A','B','C','D'].forEach(function(o){var v=r['option'+o],iC=r.correctAnswer.toUpperCase()===o,iS=r.studentAnswer&&r.studentAnswer.toUpperCase()===o;var cl='oi';if(iC)cl+=' co';else if(iS&&!r.isCorrect)cl+=' wo';h+='<div class="'+cl+'" style="cursor:default;"><span class="ol">'+o+'</span><span class="ot">'+escP(v);if(iC)h+=' <b style="color:var(--green-d);">✓ Correct Answer</b>';if(iS&&!r.isCorrect)h+=' <b style="color:var(--red-d);">✕ Your Answer</b>';if(iS&&r.isCorrect)h+=' <b style="color:var(--green-d);">(Your Answer)</b>';h+='</span></div>';});h+='</div>';if(r.explanation)h+='<div class="expbox"><div class="exp-head"><span class="exp-icon">💡</span><span class="exp-label">Explanation</span></div><div class="exp-text">'+esc(r.explanation)+'</div></div>';h+='</div>';});return h;}
+function pPDF(){if(!LR){toast('No result data','error');return;}gPDF(LR);}
 function xPDF(sid){api({action:'getSubmissionDetail',submissionID:sid},function(r){if(r.success)gPDF(r);else toast(r.message,'error');});}
-function gPDF(d){var w=window.open('','_blank');var tQ=d.totalQuestions||(d.totalCorrect+d.totalWrong+d.totalUnanswered);var pct=tQ>0?Math.round((d.totalCorrect/tQ)*100):0;var html='<!DOCTYPE html><html><head><title>'+escP(d.studentName)+' Report</title><style>@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap");*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Nunito",sans-serif;color:#212121;line-height:1.6;}.pg{max-width:720px;margin:0 auto;padding:40px 32px;}.hd{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;border-bottom:2px solid #6C63FF;margin-bottom:24px;}.hl{font-size:20px;font-weight:900;color:#6C63FF;}.hl span{color:#212121;}.hr{text-align:right;font-size:11px;color:#9E9E9E;line-height:1.5;}.hr b{color:#616161;}.sc{background:#F5F5F5;border:1.5px solid #E8E8E8;border-radius:14px;padding:28px;text-align:center;margin-bottom:22px;}.sc .sl{font-size:10px;font-weight:800;color:#9E9E9E;text-transform:uppercase;letter-spacing:.1em;}.sc .sv{font-size:44px;font-weight:900;color:#6C63FF;margin:4px 0;}.sc .sa{font-size:12px;color:#9E9E9E;}.sc .sr{display:flex;justify-content:center;gap:14px;margin-top:16px;flex-wrap:wrap;}.sc .sb{background:#fff;border:1.5px solid #E8E8E8;border-radius:8px;padding:10px 18px;text-align:center;min-width:70px;}.sc .sb .bv{font-size:20px;font-weight:900;}.sc .sb .bl{font-size:9px;font-weight:800;color:#9E9E9E;text-transform:uppercase;margin-top:1px;}.sc .sb.c{border-color:#43A047;background:#E8F5E9;}.sc .sb.c .bv{color:#2E7D32;}.sc .sb.w{border-color:#E53935;background:#FFEBEE;}.sc .sb.w .bv{color:#C62828;}.ib{display:flex;justify-content:space-between;background:#FAFAFA;border:1.5px solid #E8E8E8;border-radius:8px;padding:12px 18px;margin-bottom:22px;font-size:13px;color:#616161;flex-wrap:wrap;gap:6px;}.ib b{color:#212121;}.sec{font-size:14px;font-weight:800;padding-bottom:8px;border-bottom:1.5px solid #E8E8E8;margin-bottom:18px;}.para{background:#FAFAFA;border:1.5px solid #E8E8E8;border-left:4px solid #6C63FF;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:12px;font-size:13px;color:#424242;line-height:1.65;white-space:pre-line;}.para-t{font-size:11px;font-weight:900;color:#6C63FF;text-transform:uppercase;margin-bottom:4px;}.qb{border:1.5px solid #E8E8E8;border-radius:10px;padding:18px;margin-bottom:12px;page-break-inside:avoid;}.qh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #EEEEEE;}.qn{font-size:11px;font-weight:900;color:#6C63FF;background:#EEEDFF;padding:3px 12px;border-radius:16px;}.qs{font-size:10px;font-weight:800;padding:3px 12px;border-radius:16px;}.qs.c{background:#E8F5E9;color:#2E7D32;}.qs.w{background:#FFEBEE;color:#C62828;}.qs.s{background:#EEEEEE;color:#757575;}.qtx{font-size:15px;font-weight:700;margin-bottom:12px;line-height:1.6;}.op{padding:8px 12px;margin:3px 0;border-radius:6px;font-size:13px;color:#616161;display:flex;align-items:flex-start;gap:8px;line-height:1.45;}.op .opl{font-weight:900;color:#fff;background:#BDBDBD;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:12px;flex-shrink:0;}.op.co{background:#E8F5E9;border-left:3px solid #43A047;}.op.co .opl{background:#43A047;}.op.wo{background:#FFEBEE;border-left:3px solid #E53935;}.op.wo .opl{background:#E53935;}.ex{background:#EEEDFF;border:1.5px solid rgba(108,99,255,.1);border-left:4px solid #6C63FF;padding:14px 18px;margin-top:10px;border-radius:0 8px 8px 0;}.ex .el{font-size:12px;font-weight:900;color:#6C63FF;text-transform:uppercase;margin-bottom:4px;}.ex .et{font-size:13px;color:#424242;font-weight:600;line-height:1.7;}.ft{margin-top:30px;padding-top:14px;border-top:2px solid #6C63FF;display:flex;justify-content:space-between;font-size:10px;color:#BDBDBD;flex-wrap:wrap;gap:6px;}.ft b{color:#757575;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pg{padding:18px;}.qb{break-inside:avoid;}}</style></head><body><div class="pg">';html+='<div class="hd"><div><div class="hl">Exam<span>Pro</span></div><div style="font-size:10px;color:#9E9E9E;">Online Examination Portal</div></div><div class="hr"><b>Generated</b><br>'+new Date(d.submittedAt||new Date()).toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'})+'<br>'+new Date(d.submittedAt||new Date()).toLocaleTimeString()+'</div></div>';html+='<div class="sc"><div class="sl">Score</div><div class="sv">'+d.score+'</div><div class="sa">'+pct+'% · '+tQ+' questions</div><div class="sr"><div class="sb c"><div class="bv">'+d.totalCorrect+'</div><div class="bl">Correct</div></div><div class="sb w"><div class="bv">'+d.totalWrong+'</div><div class="bl">Wrong</div></div><div class="sb"><div class="bv">'+d.totalUnanswered+'</div><div class="bl">Skip</div></div></div></div>';html+='<div class="ib"><div><b>Student:</b> '+escP(d.studentName)+'</div><div><b>Exam:</b> '+escP(d.examTitle||'')+'</div></div>';html+='<div class="sec">Answer Review</div>';d.detailedResponses.forEach(function(r,i){var s2=r.isUnanswered?'s':(r.isCorrect?'c':'w');var t2=r.isUnanswered?'Skip':(r.isCorrect?'Correct':'Wrong');html+='<div class="qb"><div class="qh"><span class="qn">Q'+(i+1)+'</span><span class="qs '+s2+'">'+t2+'</span></div>';if(r.paragraph&&r.paragraph.trim())html+='<div class="para"><div class="para-t">📖 Passage</div>'+escP(r.paragraph).replace(/\n/g,'<br>')+'</div>';html+='<div class="qtx">'+escP(r.questionText)+'</div>';['A','B','C','D'].forEach(function(o){var v=r['option'+o],iC=r.correctAnswer.toUpperCase()===o,iS=r.studentAnswer&&r.studentAnswer.toUpperCase()===o;var c2='op';if(iC)c2+=' co';else if(iS&&!r.isCorrect)c2+=' wo';html+='<div class="'+c2+'"><span class="opl">'+o+'</span><span>'+escP(v);if(iC)html+=' <b style="color:#2E7D32;">✓</b>';if(iS&&!r.isCorrect)html+=' <b style="color:#C62828;">✕</b>';html+='</span></div>';});if(r.explanation)html+='<div class="ex"><div class="el">💡 Explanation</div><div class="et">'+escP(r.explanation)+'</div></div>';html+='</div>';});html+='<div class="ft"><div>© 2025 <b>ExamPro</b></div><div>Developed by <b>Pankaj Thakur</b></div></div></div></body></html>';w.document.write(html);w.document.close();setTimeout(function(){w.print();},500);}
+</script>
+
+<script>
+function gPDF(d){
+  var w=window.open('','_blank');
+  var tQ=d.totalQuestions||(d.totalCorrect+d.totalWrong+d.totalUnanswered);
+  var pct=tQ>0?Math.round((d.totalCorrect/tQ)*100):0;
+  var html='<!DOCTYPE html><html><head><title>Result — '+escP(d.studentName)+'</title><style>';
+  html+='@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;600;700;800&display=swap");';
+  html+='*{margin:0;padding:0;box-sizing:border-box;}body{font-family:"Noto Sans",sans-serif;color:#212121;line-height:1.6;background:#fff;}';
+  html+='.pg{max-width:740px;margin:0 auto;padding:36px 28px;}';
+  html+='.stripe{height:6px;background:linear-gradient(90deg,#FF6200 0%,#FF6200 33.33%,#fff 33.33%,#fff 66.66%,#1a7a1a 66.66%,#1a7a1a 100%);}';
+  html+='.hd{background:#003087;color:#fff;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}';
+  html+='.hl{font-family:"Noto Serif",Georgia,serif;font-size:20px;font-weight:700;}.hl span{color:#FF6200;}';
+  html+='.hr{text-align:right;font-size:11px;color:rgba(255,255,255,.7);line-height:1.5;}.hr b{color:#fff;}';
+  html+='.sc{border:1.5px solid #d0d5dd;border-radius:8px;padding:24px;text-align:center;margin-bottom:20px;border-top:4px solid #003087;}';
+  html+='.sc .sl{font-size:10px;font-weight:700;color:#9e9e9e;text-transform:uppercase;letter-spacing:.08em;}';
+  html+='.sc .sv{font-size:48px;font-weight:800;color:#003087;margin:6px 0;font-family:"Noto Serif",Georgia,serif;}';
+  html+='.sc .sa{font-size:13px;color:#757575;margin-bottom:14px;}';
+  html+='.sr{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}';
+  html+='.sb{border:1.5px solid #e0e0e0;border-radius:6px;padding:10px 18px;text-align:center;min-width:70px;}';
+  html+='.sb .bv{font-size:22px;font-weight:800;}.sb .bl{font-size:9px;font-weight:700;color:#9e9e9e;text-transform:uppercase;margin-top:2px;}';
+  html+='.sb.c{border-color:#1a7a1a;background:#e6f4e6;}.sb.c .bv{color:#145214;}';
+  html+='.sb.w{border-color:#c0392b;background:#fdecea;}.sb.w .bv{color:#922b21;}';
+  html+='.ib{display:flex;justify-content:space-between;background:#f0f4fb;border:1px solid #d0d5dd;border-radius:6px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#616161;flex-wrap:wrap;gap:6px;}';
+  html+='.ib b{color:#212121;}';
+  html+='.sec{font-size:13px;font-weight:700;color:#003087;text-transform:uppercase;letter-spacing:.06em;padding-bottom:7px;border-bottom:2px solid #003087;margin-bottom:16px;}';
+  html+='.para{background:#f0f4fb;border:1px solid #d0d5dd;border-left:4px solid #003087;border-radius:0 6px 6px 0;padding:12px 16px;margin-bottom:10px;font-size:13px;color:#424242;line-height:1.65;white-space:pre-line;}';
+  html+='.para-t{font-size:10px;font-weight:700;color:#003087;text-transform:uppercase;margin-bottom:4px;}';
+  html+='.qb{border:1px solid #e0e0e0;border-radius:8px;padding:16px;margin-bottom:12px;page-break-inside:avoid;}';
+  html+='.qh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;padding-bottom:8px;border-bottom:1px solid #eeeeee;}';
+  html+='.qn{font-size:11px;font-weight:700;color:#003087;background:#e8edf7;padding:2px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;}';
+  html+='.qs{font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em;}';
+  html+='.qs.c{background:#e6f4e6;color:#145214;}.qs.w{background:#fdecea;color:#922b21;}.qs.s{background:#eeeeee;color:#757575;}';
+  html+='.qtx{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.65;}';
+  html+='.op{padding:7px 11px;margin:2px 0;border-radius:5px;font-size:13px;color:#616161;display:flex;align-items:flex-start;gap:8px;line-height:1.45;}';
+  html+='.op .opl{font-weight:700;color:#fff;background:#bdbdbd;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:11px;flex-shrink:0;}';
+  html+='.op.co{background:#e6f4e6;border-left:3px solid #1a7a1a;}.op.co .opl{background:#1a7a1a;}';
+  html+='.op.wo{background:#fdecea;border-left:3px solid #c0392b;}.op.wo .opl{background:#c0392b;}';
+  html+='.ex{background:#e8edf7;border:1px solid rgba(0,48,135,.12);border-left:4px solid #003087;padding:12px 16px;margin-top:10px;border-radius:0 6px 6px 0;}';
+  html+='.ex .el{font-size:11px;font-weight:700;color:#003087;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}';
+  html+='.ex .et{font-size:13px;color:#424242;font-weight:500;line-height:1.7;}';
+  html+='.ft{margin-top:28px;padding-top:12px;border-top:2px solid #003087;display:flex;justify-content:space-between;font-size:10px;color:#9e9e9e;flex-wrap:wrap;gap:6px;}.ft b{color:#616161;}';
+  html+='@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pg{padding:16px;}.qb{break-inside:avoid;}}';
+  html+='</style></head><body>';
+  html+='<div class="stripe"></div>';
+  html+='<div class="hd"><div><div class="hl">Exam<span>Portal</span></div><div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;">National Online Examination Portal</div></div><div class="hr"><b>Result Report</b><br>'+new Date(d.submittedAt||new Date()).toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric'})+'<br>'+new Date(d.submittedAt||new Date()).toLocaleTimeString()+'</div></div>';
+  html+='<div class="pg">';
+  html+='<div class="sc"><div class="sl">Final Score</div><div class="sv">'+d.score+'</div><div class="sa">Accuracy: '+pct+'%  &nbsp;|&nbsp;  Total Questions: '+tQ+'</div><div class="sr"><div class="sb c"><div class="bv">'+d.totalCorrect+'</div><div class="bl">Correct</div></div><div class="sb w"><div class="bv">'+d.totalWrong+'</div><div class="bl">Wrong</div></div><div class="sb"><div class="bv">'+d.totalUnanswered+'</div><div class="bl">Skipped</div></div></div></div>';
+  html+='<div class="ib"><div><b>Candidate:</b> '+escP(d.studentName)+'</div><div><b>Examination:</b> '+escP(d.examTitle||'')+'</div></div>';
+  html+='<div class="sec">Answer Review</div>';
+  d.detailedResponses.forEach(function(r,i){
+    var s2=r.isUnanswered?'s':(r.isCorrect?'c':'w');
+    var t2=r.isUnanswered?'Skipped':(r.isCorrect?'Correct':'Incorrect');
+    html+='<div class="qb"><div class="qh"><span class="qn">Q '+(i+1)+'</span><span class="qs '+s2+'">'+t2+'</span></div>';
+    if(r.paragraph&&r.paragraph.trim())html+='<div class="para"><div class="para-t">📖 Passage</div>'+escP(r.paragraph).replace(/\n/g,'<br>')+'</div>';
+    html+='<div class="qtx">'+escP(r.questionText)+'</div>';
+    ['A','B','C','D'].forEach(function(o){
+      var v=r['option'+o],iC=r.correctAnswer.toUpperCase()===o,iS=r.studentAnswer&&r.studentAnswer.toUpperCase()===o;
+      var c2='op';if(iC)c2+=' co';else if(iS&&!r.isCorrect)c2+=' wo';
+      html+='<div class="'+c2+'"><span class="opl">'+o+'</span><span>'+escP(v);
+      if(iC)html+=' <b style="color:#145214;">✓</b>';
+      if(iS&&!r.isCorrect)html+=' <b style="color:#922b21;">✕</b>';
+      html+='</span></div>';
+    });
+    if(r.explanation)html+='<div class="ex"><div class="el">💡 Explanation</div><div class="et">'+escP(r.explanation)+'</div></div>';
+    html+='</div>';
+  });
+  html+='<div class="ft"><div>© 2025 <b>ExamPortal</b> — National Online Examination Portal</div><div>Developed by <b>Pankaj Thakur</b></div></div>';
+  html+='</div></body></html>';
+  w.document.write(html);w.document.close();setTimeout(function(){w.print();},500);
+}
 </script>
 </body>
 </html>
